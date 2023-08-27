@@ -1,0 +1,22 @@
+{
+    "name": "Tray DevTools",
+    "description": "Descrição da minha extensão",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "background": {
+      "service_worker": "src/google/background.js",
+      "type": "module"
+    },
+    "action": {
+      "default_popup": "dist/index.html"
+    },
+    "host_permissions": ["<all_urls>"],
+    "permissions": [
+      "tabs",
+      "activeTab",
+      "scripting",
+      "storage",
+      "browsingData"
+    ]
+  }
+  
