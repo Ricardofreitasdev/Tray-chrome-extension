@@ -1,4 +1,4 @@
-# Tray Chrome extension
+# Tray Chrome extension versão DEV
 
 Para instalar a versão de DEV é necessário ter o arquivo **tray-chrome-extension.sh** com as chaves de ambiente.
 
