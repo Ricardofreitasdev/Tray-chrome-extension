@@ -6,6 +6,7 @@ import {
   layoutOff,
   getStoreHistory,
   changeEnvironment,
+  getInlineScripts,
 } from "./extension.js";
 
 // eslint-disable-next-line no-undef
@@ -18,6 +19,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     clearCache,
     getStoreHistory,
     changeEnvironment,
+    getInlineScripts,
   };
 
   const action = actions[message.action];

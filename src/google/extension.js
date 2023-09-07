@@ -1,6 +1,7 @@
 import {
   changeUrl,
   getHistory,
+  getInlineScriptsWithoutNonce,
   removeExternalJsFromUrl,
   removeLayoutByParam,
   setHistory,
@@ -67,6 +68,18 @@ export const jsOff = (message, sendResponse) => {
   chrome.tabs.update(tabId, { url: response.newUrl }, function () {
     sendResponse(response.message.success);
   });
+};
+
+export const getInlineScripts = (message, sendResponse) => {
+  chrome.scripting.executeScript(
+    {
+      target: { tabId: message.tabId },
+      func: getInlineScriptsWithoutNonce,
+    },
+    function (result) {
+      sendResponse(result[0].result);
+    }
+  );
 };
 
 export const getStoreHistory = async (message, sendResponse) => {

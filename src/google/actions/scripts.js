@@ -105,6 +105,10 @@ export const storeDataByHtml = () => {
     "script#pageview-script"
   );
 
+  const hasCSP = !!document.querySelector(
+    'meta[http-equiv="Content-Security-Policy"]'
+  );
+
   const store = {
     id: id,
     session: session,
@@ -112,6 +116,7 @@ export const storeDataByHtml = () => {
     url: window.location.origin,
     currentUrl: window.location.href,
     isTray: isTray || isPageviewScriptPresent,
+    hasCSP: hasCSP,
   };
 
   return store;
@@ -150,6 +155,19 @@ export const storeIntegrationsByHtml = () => {
   };
 
   return integrations;
+};
+
+export const getInlineScriptsWithoutNonce = () => {
+  const inlineScripts = [];
+  const scriptElements = document.querySelectorAll("script:not([src])");
+
+  scriptElements.forEach((script) => {
+    if (!script.hasAttribute("nonce")) {
+      inlineScripts.push(script.textContent);
+    }
+  });
+
+  return inlineScripts;
 };
 
 export const getHistory = async () => {

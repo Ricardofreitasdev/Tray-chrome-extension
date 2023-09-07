@@ -25,7 +25,7 @@ export default {
   font-size: 14px;
   text-align: center;
   background: #0d1117;
-  opacity: 0.95;
+  opacity: 0.9;
   width: 100%;
   position: fixed;
   left: 0;
@@ -36,6 +36,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  span {
+    color: orangered;
+  }
 
   &:not(:empty) {
     margin: 0;

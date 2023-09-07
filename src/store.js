@@ -28,7 +28,7 @@ store.watch(
   (state) => state.notification,
   (newNotification) => {
     if (newNotification !== "") {
-      store.dispatch("clearNotificationAfterDelay", 3000);
+      store.dispatch("clearNotificationAfterDelay", 4000);
     }
   }
 );

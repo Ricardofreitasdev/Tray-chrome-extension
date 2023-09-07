@@ -14,6 +14,11 @@
       <p class="item">
         <a @click="removeExternalScripts">Remover Scripts Externos</a>
       </p>
+      <p v-show="isEasy" class="item">
+        <a @click="verifyInlineScript"
+          >[CSP] Report de scripts inline sem nonce</a
+        >
+      </p>
       <hr />
       <app-history />
     </div>
@@ -22,8 +27,9 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import {
+  getInlineScripts,
   getStoreData,
   getStoreIntegrations,
   jsOff,
@@ -44,11 +50,14 @@ export default {
     const store = ref({});
     const url = ref("");
     const isTray = ref(false);
+    const hasCSP = ref(false);
     const vuex = useStore();
+    const currentUrl = ref("");
 
     onMounted(async () => {
       const storeData = await getStoreData();
       const storeIntegrations = await getStoreIntegrations();
+      currentUrl.value = storeData.currentUrl;
 
       store.value = {
         id: { value: storeData.id, label: "Loja" },
@@ -61,6 +70,7 @@ export default {
 
       url.value = storeData.url;
       isTray.value = storeData.isTray;
+      hasCSP.value = storeData.hasCSP;
     });
 
     const limitString = (text) => {
@@ -82,12 +92,57 @@ export default {
       vuex.commit("setNotification", response);
     };
 
+    const isEasy = computed(() => currentUrl.value.includes("checkout"));
+
+    const createCSPReport = (data) => {
+      const scriptReport = data.join("\n\n");
+      const blob = new Blob([scriptReport], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `scripts_inline_sem_nonce_loja-${store.value.id.value}.txt`;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    };
+
+    const verifyInlineScript = async () => {
+      const response = await getInlineScripts();
+
+      if (!hasCSP.value) {
+        vuex.commit(
+          "setNotification",
+          `A loja ${store.value.id.value} não esta com CSP ativo`
+        );
+        return;
+      }
+
+      if (response.length > 0) {
+        createCSPReport(response);
+
+        vuex.commit(
+          "setNotification",
+          `Acesse os seus downloads para verificar os scripts bloqueado na loja ${store.value.id.value}`
+        );
+        return;
+      }
+
+      vuex.commit(
+        "setNotification",
+        `A loja ${store.value.id.value} não tem scripts inlines sem nonce`
+      );
+    };
+
     return {
       store,
       isTray,
+      isEasy,
       limitString,
       removeTheme,
       removeExternalScripts,
+      verifyInlineScript,
     };
   },
 };

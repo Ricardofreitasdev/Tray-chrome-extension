@@ -34,3 +34,6 @@ export const getStoreIntegrations = async () =>
 
 export const changeEnvironment = async (data) =>
   await sendChromeMessage("changeEnvironment", data);
+
+export const getInlineScripts = async () =>
+  await sendChromeMessage("getInlineScripts");
