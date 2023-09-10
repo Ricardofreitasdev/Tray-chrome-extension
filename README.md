@@ -2,6 +2,10 @@
 
 Extensão do chrome com recursos que facilitam o trabalho com lojas Tray.
 
+## Uso
+
+Para usar a versão simples no seu navegador, basta seguir as orientações https://github.com/Ricardofreitasdev/Tray-chrome-extension/tree/build#uso 
+
 ## Desenvolvimento
 
 Clone o repositório
@@ -38,13 +42,13 @@ Para instalar a versão de DEV é necessário ter o arquivo **tray-chrome-extens
 
 Tendo o script, basta realizar o processo:
 
-#### De permissão para o script
+- De permissão para o script
 
 ```bash
 chmod +x tray-chrome-extension.sh
 ```
 
-#### Instale o projeto e dependências
+- Instale o projeto e dependências
 
 ```bash
 ./tray-chrome-extension.sh
