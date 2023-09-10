@@ -41,6 +41,8 @@ jobs:
             
       - name: Push to build branch
         run: |
+          git fetch
+          git pull origin main
           git add -A
           git commit -m "Update build"
           git push origin build
