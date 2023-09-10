@@ -15,6 +15,12 @@
     <p class="item">
       <a :href="robots" target="_blank">Robots</a>
     </p>
+    <p class="item">
+      <a 
+        href="https://tagassistant.google.com"
+        target="_blank"
+      >Tag Assistant</a>
+    </p>
   </div>
 </template>
 

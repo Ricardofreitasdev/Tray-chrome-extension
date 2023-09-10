@@ -12,6 +12,7 @@
       </template>
     </Tabs>
     <Messages />
+    <footer class="footer-message">version 1.0.0</footer>
   </div>
 </template>
 
@@ -45,7 +46,7 @@ export default {
   position: relative;
 }
 
-.dev {
+.footer-message {
   text-align: center;
   font-size: 10px;
   bottom: 5px;
