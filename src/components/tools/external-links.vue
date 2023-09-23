@@ -16,10 +16,26 @@
       <a :href="robots" target="_blank">Robots</a>
     </p>
     <p class="item">
-      <a 
+      <a
         href="https://tagassistant.google.com"
         target="_blank"
       >Tag Assistant</a>
+    </p>
+    <p class="item">
+      <a
+        href="https://developers.tray.com.br"
+        target="_blank"
+      >
+        Documentação API
+      </a>
+    </p>
+    <p class="item">
+      <a
+        href="https://partners.tray.com.br/v/themes/comece-por-aqui/temas-tray"
+        target="_blank"
+      >
+        Documentação Temas
+      </a>
     </p>
   </div>
 </template>

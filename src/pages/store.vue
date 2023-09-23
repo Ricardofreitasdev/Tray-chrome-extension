@@ -15,9 +15,7 @@
         <a @click="removeExternalScripts">Remover Scripts Externos</a>
       </p>
       <p v-show="isEasy" class="item">
-        <a @click="verifyInlineScript"
-          >[CSP] Report de scripts inline sem nonce</a
-        >
+        <a @click="verifyInlineScript">[CSP] Report de scripts inline sem nonce</a>
       </p>
       <hr />
       <app-history />
@@ -94,8 +92,15 @@ export default {
 
     const isEasy = computed(() => currentUrl.value.includes("checkout"));
 
-    const createCSPReport = (data) => {
-      const scriptReport = data.join("\n\n");
+    const createCSPReport = (data, total) => {
+      let scriptReport = `Total de Scripts Bloqueados: ${total}\n\n`;
+      
+      data.forEach((script, index) => {
+        scriptReport += `Script ${index + 1}:\n`;
+        scriptReport += `-------------------------------------------\n`;
+        scriptReport += `${script}\n\n`;
+      });
+
       const blob = new Blob([scriptReport], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
 
@@ -109,7 +114,7 @@ export default {
     };
 
     const verifyInlineScript = async () => {
-      const response = await getInlineScripts();
+      const { inlineScripts, totalBlockedScripts} = await getInlineScripts();
 
       if (!hasCSP.value) {
         vuex.commit(
@@ -119,8 +124,8 @@ export default {
         return;
       }
 
-      if (response.length > 0) {
-        createCSPReport(response);
+      if (totalBlockedScripts > 0) {
+        createCSPReport(inlineScripts, totalBlockedScripts);
 
         vuex.commit(
           "setNotification",
