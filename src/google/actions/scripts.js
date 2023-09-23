@@ -162,12 +162,18 @@ export const getInlineScriptsWithoutNonce = () => {
   const scriptElements = document.querySelectorAll("script:not([src])");
 
   scriptElements.forEach((script) => {
-    if (!script.hasAttribute("nonce")) {
-      inlineScripts.push(script.textContent);
+    if (!script.hasAttribute("nonce") || script.getAttribute("nonce") == null) {
+      const scriptContent = script.textContent;
+      const limitedContent =
+        scriptContent.length > 750
+          ? scriptContent.slice(0, 750) + "..."
+          : scriptContent;
+
+      inlineScripts.push(limitedContent);
     }
   });
-
-  return inlineScripts;
+  const totalBlockedScripts = inlineScripts.length;
+  return { inlineScripts, totalBlockedScripts };
 };
 
 export const getHistory = async () => {

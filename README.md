@@ -1,7 +1,33 @@
 # Tray Chrome extension
 
 Extensão do chrome com recursos que facilitam o trabalho com lojas Tray.
+## Recursos
+### Aba Loja
+#### Dados da loja
+- ID da loja
+- ID da sessão
+- Código do GTM
+- Código do GA4
+- Código do Pixel do Facebook
 
+#### Recursos úteis
+- Remover Tema
+- Remover Scripts Externos
+- Report de scripts inlines bloqueados por CSP
+#### Histórico de uso da extensão
+- Histórico das últimas 4 lojas visitadas.
+  
+### Aba Ferramentas
+- Gerar CPF com um click
+- Limpar localStorage
+- Whats My Dns
+- Pagespeed
+- Search Console
+- Sitemap
+- Robots
+- Tag Assistant
+- Documentação de APIs
+- Documentação de Temas
 ## Uso
 
 Para usar a versão simples no seu navegador, basta seguir as orientações https://github.com/Ricardofreitasdev/Tray-chrome-extension/tree/build#uso 
