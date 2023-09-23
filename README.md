@@ -33,7 +33,19 @@ Aba Ferramentas
 - Documentação de Temas
 ## Uso
 
-Para usar a versão simples no seu navegador, basta seguir as orientações https://github.com/Ricardofreitasdev/Tray-chrome-extension/tree/build#uso 
+Para usar a versão simples no seu navegador, basta seguir as orientações:
+
+Click em `code` > `download ZIP`
+
+![step1](./doc/step-1.png) 
+
+Descompacte o ZIP na sua pasta de preferência
+
+Acesse `chrome://extensions/` com o modo do `desenvolvedor` ativo, click em `carregar sem compactação`, localize a pasta descompactada e click em `selecionar` 
+
+Com Isso a extensão já irá carregar
+
+![Alt text](./doc/image.png)
 ## Uso da versão com ambiente de DEV
 
 Para instalar a versão de DEV é necessário ter o arquivo **tray-chrome-extension.sh** com as chaves de ambiente.
