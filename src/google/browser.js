@@ -26,6 +26,8 @@ export const layoutOff = async () => await sendChromeMessage("layoutOff");
 
 export const jsOff = async () => await sendChromeMessage("jsOff");
 
+export const fbDebug = async () => await sendChromeMessage("fbDebug");
+
 export const getStoreHistory = async () =>
   await sendChromeMessage("getStoreHistory");
 

@@ -1,22 +1,22 @@
 <template>
   <div>
     <button class="button" @click="gerarCPF">Gerar CPF</button>
-    <code v-if="cpf" @click="copy(cpf)">
-      {{ cpf }}
-    </code>
+    <copy-area :text="cpf" />
   </div>
 </template>
 
 <script>
-import { utils } from "../../mixin/utils";
+import copyArea from '../copy-area.vue';
 export default {
   name: "AppBuildCpf",
-  mixins: [utils],
+  components: { copyArea },
+
   data() {
     return {
       cpf: "",
     };
   },
+
   methods: {
     gerarCPF() {
       const n = 9;
@@ -45,7 +45,7 @@ export default {
 
       return dv;
     },
-  },
+  }
 };
 </script>
 

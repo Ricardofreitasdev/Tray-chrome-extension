@@ -42,16 +42,16 @@
 
 <script>
 import { ref, onMounted, computed } from "vue";
-import { utils } from "../../mixin/utils";
 import { getStoreData } from "../../google/browser";
+import { useCopy } from '../../composables/utils';
 export default {
   name: "AppExternalLinks",
-  mixins: [utils],
 
   setup() {
     const url = ref("");
     const currentUrl = ref("");
     const isTray = ref(false);
+    const { copy } = useCopy();
 
     onMounted(async () => {
       const storeData = await getStoreData();
@@ -81,7 +81,7 @@ export default {
       return `${url.value}/robots.txt`;
     });
 
-    return { pageSpeedUrl, searchConsole, whatsMyDns, sitemap, robots, isTray };
+    return { copy, pageSpeedUrl, searchConsole, whatsMyDns, sitemap, robots, isTray };
   },
 };
 </script>

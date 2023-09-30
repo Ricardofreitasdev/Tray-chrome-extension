@@ -1,4 +1,5 @@
 import {
+  addFbDebugParam,
   changeUrl,
   getHistory,
   getInlineScriptsWithoutNonce,
@@ -19,6 +20,11 @@ export const getStoreData = (message, sendResponse) => {
       func: storeDataByHtml,
     },
     async function (result) {
+
+      if (!result) {
+        return;
+      }
+      
       const response = result[0].result;
 
       if (response.isTray) {
@@ -55,6 +61,21 @@ export const layoutOff = (message, sendResponse) => {
     sendResponse(response.message.success);
   });
 };
+
+export const fbDebug = (message, sendResponse) => {
+  const { tabId, tabUrl } = message;
+  const response = addFbDebugParam(tabUrl);
+
+  if (response.message.error) {
+    sendResponse(response.message.error);
+    return;
+  }
+
+  chrome.tabs.update(tabId, { url: response.newUrl }, function () {
+    sendResponse(response.message.success);
+  });
+};
+
 
 export const jsOff = (message, sendResponse) => {
   const { tabId, tabUrl } = message;

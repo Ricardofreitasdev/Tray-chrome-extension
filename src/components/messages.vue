@@ -38,7 +38,7 @@ export default {
   justify-content: center;
 
   span {
-    color: orangered;
+    color: $text-color-2;
   }
 
   &:not(:empty) {
