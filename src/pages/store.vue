@@ -4,10 +4,13 @@
       <div v-for="(prop, key) in store" :key="key" class="item">
         <p v-if="prop.value">
           {{ prop.label }}:
-          <b @click="copy(prop.value)">{{ limitString(prop.value) }}</b>
+          <copy-area :text="prop.value" />
         </p>
       </div>
       <hr />
+      <p class="item">
+        <a @click="facebookConversions">Ativar Debug do Facebook</a>
+      </p>
       <p class="item">
         <a @click="removeTheme">Remover Tema</a>
       </p>
@@ -32,17 +35,18 @@ import {
   getStoreIntegrations,
   jsOff,
   layoutOff,
+  fbDebug,
 } from "../google/browser";
-import { utils } from "../mixin/utils";
 import { useStore } from "vuex";
 import AppHistory from "../components/tools/history.vue";
+import CopyArea from '../components/copy-area.vue';
 
 export default {
   name: "Store",
   components: {
     AppHistory,
+    CopyArea,
   },
-  mixins: [utils],
 
   setup() {
     const store = ref({});
@@ -87,6 +91,11 @@ export default {
 
     const removeExternalScripts = async () => {
       const response = await jsOff();
+      vuex.commit("setNotification", response);
+    };
+
+    const facebookConversions = async () => {
+      const response = await fbDebug();
       vuex.commit("setNotification", response);
     };
 
@@ -147,6 +156,7 @@ export default {
       limitString,
       removeTheme,
       removeExternalScripts,
+      facebookConversions,
       verifyInlineScript,
     };
   },

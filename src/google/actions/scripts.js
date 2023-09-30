@@ -50,6 +50,24 @@ export const removeLayoutByParam = (url) => {
   return { newUrl, message };
 };
 
+export const addFbDebugParam = (url) => {
+  const param = "fbConversionsDebug=1";
+
+  const message = {
+    error: "",
+    success: "Facebook Conversions Console aberto com sucesso!",
+  };
+
+  if (url.includes(param)) {
+    message.error = `O parâmetro do Facebook Conversions já esta na url`;
+    return { newUrl: null, message };
+  }
+
+  const newUrl = addParamToUrl(url, param);
+
+  return { newUrl, message };
+};
+
 export const changeUrl = ({ currentUrl, environment }, config) => {
   const checkoutEnvironments = createEnvironmentMapping(
     config.easy,

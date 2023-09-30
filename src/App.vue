@@ -12,7 +12,7 @@
       </template>
     </Tabs>
     <Messages />
-    <footer class="footer-message">version 1.0.0</footer>
+    <footer class="footer-message">version 1.0.1</footer>
   </div>
 </template>
 
@@ -38,9 +38,9 @@ export default {
 .board {
   background: #0d1117;
   max-width: 300px;
-  max-height: 400px;
+  max-height: 425px;
   width: 400px;
-  height: 400px;
+  height: 425px;
   overflow-y: hidden;
   padding: 16px;
   position: relative;
