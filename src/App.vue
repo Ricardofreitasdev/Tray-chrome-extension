@@ -12,7 +12,7 @@
       </template>
     </Tabs>
     <Messages />
-    <footer class="footer-message">version 1.0.1</footer>
+    <footer class="footer-message">version 1.0.2</footer>
   </div>
 </template>
 
