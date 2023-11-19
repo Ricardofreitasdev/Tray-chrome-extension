@@ -28,15 +28,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from "vue";
-import {
-  getInlineScripts,
-  getStoreData,
-  getStoreIntegrations,
-  jsOff,
-  layoutOff,
-  fbDebug,
-} from "../google/browser";
+import { ref, onMounted, computed, inject } from "vue";
 import { useStore } from "vuex";
 import AppHistory from "../components/tools/history.vue";
 import CopyArea from '../components/copy-area.vue';
@@ -49,6 +41,7 @@ export default {
   },
 
   setup() {
+    const chromeExtension = inject('chromeExtension');
     const store = ref({});
     const url = ref("");
     const isTray = ref(false);
@@ -57,8 +50,8 @@ export default {
     const currentUrl = ref("");
 
     onMounted(async () => {
-      const storeData = await getStoreData();
-      const storeIntegrations = await getStoreIntegrations();
+      const storeData = await chromeExtension.getStoreData();
+      const storeIntegrations = await chromeExtension.getStoreIntegrations();
       currentUrl.value = storeData.currentUrl;
 
       store.value = {
@@ -85,17 +78,17 @@ export default {
     };
 
     const removeTheme = async () => {
-      const response = await layoutOff();
+      const response = await chromeExtension.layoutOff();
       vuex.commit("setNotification", response);
     };
 
     const removeExternalScripts = async () => {
-      const response = await jsOff();
+      const response = await chromeExtension.jsOff();
       vuex.commit("setNotification", response);
     };
 
     const facebookConversions = async () => {
-      const response = await fbDebug();
+      const response = await chromeExtension.fbDebug();
       vuex.commit("setNotification", response);
     };
 
@@ -123,7 +116,7 @@ export default {
     };
 
     const verifyInlineScript = async () => {
-      const { inlineScripts, totalBlockedScripts} = await getInlineScripts();
+      const { inlineScripts, totalBlockedScripts} = await chromeExtension.getInlineScripts();
 
       if (!hasCSP.value) {
         vuex.commit(

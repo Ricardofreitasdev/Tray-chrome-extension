@@ -8,16 +8,16 @@
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
-import { getStoreHistory } from "../../google/browser.js";
+import { inject, onMounted, ref } from "vue";
 
 export default {
   name: "AppHistory",
   setup() {
     const storeHistory = ref([]);
+    const chromeExtension = inject('chromeExtension');
 
     onMounted(async () => {
-      const history = await getStoreHistory();
+      const history = await chromeExtension.getStoreHistory();
       storeHistory.value = history;
     });
     return {

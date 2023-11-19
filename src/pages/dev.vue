@@ -23,8 +23,7 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive, ref } from "vue";
-import { getStoreData } from "../google/browser";
+import { computed, inject, onMounted, reactive, ref } from "vue";
 import AppEnvironmentLink from "../components/environment-link.vue";
 import environments from "../config.js";
 
@@ -35,13 +34,14 @@ export default {
   },
 
   setup() {
+    const chromeExtension = inject('chromeExtension');
     const currentUrl = ref("");
 
     const urlsEasy = reactive(environments.easy);
     const urlsCentral = reactive(environments.central);
 
     onMounted(async () => {
-      const storeData = await getStoreData();
+      const storeData = await chromeExtension.getStoreData();
       currentUrl.value = storeData.currentUrl;
     });
 
