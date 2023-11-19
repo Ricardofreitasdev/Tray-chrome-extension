@@ -1,10 +1,10 @@
 {
     "name": "Tray DevTools",
-    "description": "Descrição da minha extensão",
-    "version": "1.0.0",
+    "description": "Extensão para trabalhar com lojas Tray",
+    "version": "1.0.2",
     "manifest_version": 3,
     "background": {
-      "service_worker": "src/google/background.js",
+      "service_worker": "src/chrome/background.js",
       "type": "module"
     },
     "action": {

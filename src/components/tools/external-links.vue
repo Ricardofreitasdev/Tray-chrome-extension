@@ -41,20 +41,21 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from "vue";
-import { getStoreData } from "../../google/browser";
+import { ref, onMounted, computed, inject } from "vue";
 import { useCopy } from '../../composables/utils';
 export default {
   name: "AppExternalLinks",
 
   setup() {
+    const chromeExtension = inject('chromeExtension');
+
     const url = ref("");
     const currentUrl = ref("");
     const isTray = ref(false);
     const { copy } = useCopy();
 
     onMounted(async () => {
-      const storeData = await getStoreData();
+      const storeData = await chromeExtension.getStoreData();
 
       url.value = storeData.url;
       currentUrl.value = storeData.currentUrl;

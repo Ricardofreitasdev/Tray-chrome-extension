@@ -5,8 +5,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
-import { getStoreData, changeEnvironment } from "../google/browser";
+import { inject, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 export default {
   name: "AppEnvironmentLink",
@@ -28,14 +27,15 @@ export default {
   setup() {
     const currentUrl = ref("");
     const vuex = useStore();
+    const chromeExtension = inject('chromeExtension');
 
     onMounted(async () => {
-      const storeData = await getStoreData();
+      const storeData = await chromeExtension.getStoreData();
       currentUrl.value = storeData.currentUrl;
     });
 
     const changeUrl = async (env) => {
-      const response = await changeEnvironment({
+      const response = await chromeExtension.changeEnvironment({
         currentUrl: currentUrl.value,
         environment: env,
       });

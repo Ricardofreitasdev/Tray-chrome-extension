@@ -5,15 +5,16 @@
 </template>
 
 <script>
-import { clearCache } from "../../google/browser";
 import { useStore } from "vuex";
+import { inject } from 'vue';
 
 export default {
   name: "AppClearCache",
   setup() {
+    const chromeExtension = inject('chromeExtension');
     const store = useStore();
     const clear = async () => {
-      const response = await clearCache();
+      const response = await chromeExtension.clearCache();
       store.commit("setNotification", response);
     };
     return {

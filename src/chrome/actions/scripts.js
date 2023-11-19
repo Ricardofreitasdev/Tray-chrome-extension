@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 export const removeExternalJsFromUrl = (url) => {
   let param = "jsOff=1";
   const message = {
