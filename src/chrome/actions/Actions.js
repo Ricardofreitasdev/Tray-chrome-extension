@@ -8,7 +8,7 @@ export default class Actions {
   static FB_CONVERSIONS = "fbConversionsDebug=1";
 
   static CENTRAL_PREFIX = "my-account";
-  static CHECKOUT_PREFIX = "my-account";
+  static CHECKOUT_PREFIX = "checkout";
 
   static removeLayoutByParam(url) {
     const message = ChromeMessages.getSuccessMessage("THEME_REMOVED");
@@ -82,8 +82,50 @@ export default class Actions {
     return history;
   };
 
+  static changeUrl = ({ currentUrl, environment }, config) => {
+    const checkoutEnvironments = this.createEnvironmentMapping(
+      config.easy,
+      this.CHECKOUT_PREFIX
+    );
+    const centralEnvironments = this.createEnvironmentMapping(
+      config.central,
+      this.CENTRAL_PREFIX
+    );
+
+    const message = ChromeMessages.getSuccessMessage("CHANGE_URL");
+
+    let newUrl = currentUrl;
+
+    if (currentUrl.includes(this.CHECKOUT_PREFIX)) {
+      const urlMappingFunction = checkoutEnvironments[environment];
+      newUrl = urlMappingFunction(currentUrl);
+
+      return { newUrl, message };
+    }
+
+    if (currentUrl.includes(this.CENTRAL_PREFIX)) {
+      const urlMappingFunction = centralEnvironments[environment];
+      newUrl = urlMappingFunction(currentUrl);
+
+      return { newUrl, message };
+    }
+
+    throw new Error(ChromeMessages.getErrorMessage("CHANGE_URL_ERROR"));
+  };
+
   static addParam(url, param) {
     const separator = url.includes("?") ? "&" : "?";
     return `${url}${separator}${param}`;
+  }
+
+  static createEnvironmentMapping(items, replaceText) {
+    const mapping = {};
+    items.forEach((item) => {
+      mapping[item.environment] = (url) =>
+        item.environment === "dev" || item.environment === "tmk"
+          ? url.replace(/^https?:\/\/[^/]+/, item.url)
+          : url.replace(replaceText, item.url);
+    });
+    return mapping;
   }
 }

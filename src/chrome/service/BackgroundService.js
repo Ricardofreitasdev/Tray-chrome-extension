@@ -111,16 +111,16 @@ class BackgroundService {
   }
 
   async changeEnvironment(message, sendResponse) {
-    const { tabId } = message;
-    const response = changeUrl(message.data, environments);
+    const { tabId, data } = message;
+    try {
+      const { message, newUrl } = changeUrl(data, environments);
 
-    if (response.message.error) {
-      sendResponse(response.message.error);
-      return;
+      chrome.tabs.update(tabId, { url: newUrl }, function () {
+        sendResponse(message);
+      });
+    } catch (error) {
+      sendResponse(error.message);
     }
-    chrome.tabs.update(tabId, { url: response.newUrl }, function () {
-      sendResponse(response.message.success);
-    });
   }
 
   async clearCache(message, sendResponse) {
