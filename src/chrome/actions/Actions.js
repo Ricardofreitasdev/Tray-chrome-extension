@@ -82,6 +82,42 @@ export default class Actions {
     return history;
   };
 
+  static setHistory = async (data) => {
+    await new Promise((resolve, reject) => {
+      const storageData = {
+        id: data.id,
+        url: data.url,
+      };
+
+      this.getHistory()
+        .then((currentHistory) => {
+          if (!currentHistory) {
+            currentHistory = [];
+          }
+
+          if (currentHistory.some((item) => item.id === storageData.id)) {
+            return;
+          }
+
+          currentHistory.push(storageData);
+
+          if (currentHistory.length > 4) {
+            currentHistory.shift();
+          }
+
+          chrome.storage.local.set({ history: currentHistory }, () => {
+            resolve();
+          });
+        })
+        .catch((error) => {
+          reject(error);
+        })
+        .finally(() => {
+          resolve();
+        });
+    });
+  };
+
   static changeUrl = ({ currentUrl, environment }, config) => {
     const checkoutEnvironments = this.createEnvironmentMapping(
       config.easy,

@@ -1,5 +1,3 @@
-import { changeUrl, setHistory } from "../actions/scripts.js";
-
 import environments from "../../config.js";
 import Actions from "../actions/Actions.js";
 import InjectScripts from "../actions/InjectScripts.js";
@@ -19,7 +17,7 @@ class BackgroundService {
           const response = result[0].result;
 
           if (response.isTray) {
-            await setHistory(response);
+            await Actions.setHistory(response);
           }
 
           sendResponse(response);
@@ -101,7 +99,7 @@ class BackgroundService {
     }
   }
 
-  async getStoreHistory(message, sendResponse) {
+  async getStoreHistory(_, sendResponse) {
     try {
       const response = await Actions.getHistory();
       sendResponse(response);
@@ -113,7 +111,7 @@ class BackgroundService {
   async changeEnvironment(message, sendResponse) {
     const { tabId, data } = message;
     try {
-      const { message, newUrl } = changeUrl(data, environments);
+      const { message, newUrl } = Actions.changeUrl(data, environments);
 
       chrome.tabs.update(tabId, { url: newUrl }, function () {
         sendResponse(message);
@@ -123,26 +121,30 @@ class BackgroundService {
     }
   }
 
-  async clearCache(message, sendResponse) {
-    chrome.browsingData.remove(
-      {
-        originTypes: {
-          protectedWeb: true,
-          unprotectedWeb: true,
-          extension: true,
+  async clearCache(_, sendResponse) {
+    try {
+      chrome.browsingData.remove(
+        {
+          originTypes: {
+            protectedWeb: true,
+            unprotectedWeb: true,
+            extension: true,
+          },
         },
-      },
-      {
-        cacheStorage: false,
-        cookies: false,
-        fileSystems: false,
-        indexedDB: false,
-        localStorage: true,
-      },
-      function () {
-        sendResponse("Storage limpo com sucesso!");
-      }
-    );
+        {
+          cacheStorage: false,
+          cookies: false,
+          fileSystems: false,
+          indexedDB: false,
+          localStorage: true,
+        },
+        function () {
+          sendResponse(ChromeMessages.getSuccessMessage("STORAGE"));
+        }
+      );
+    } catch (error) {
+      sendResponse(ChromeMessages.getErrorMessage("STORAGE"));
+    }
   }
 }
 

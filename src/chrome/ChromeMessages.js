@@ -4,6 +4,7 @@ export class ChromeMessages {
     JS_REMOVED: "Javascript externo removido com sucesso!",
     FB_CONVERSIONS_SUCCESS: "Facebook Conversions Console aberto com sucesso!",
     CHANGE_URL: "Ambiente atualizado com sucesso!",
+    STORAGE: "Storage limpo com sucesso!",
   };
 
   static ERROR_MESSAGES = {
@@ -12,6 +13,7 @@ export class ChromeMessages {
     FB_CONVERSIONS_ERROR: "O parâmetro do Facebook Conversions já esta na url",
     JS_ALREADY_REMOVED: "Essa pagina já esta sem o javascript externo!",
     CHANGE_URL_ERROR: "Não é possível aplicar o ambiente nessa página",
+    STORAGE: "Ocorreu um erro ao limpar o storage!",
   };
 
   static getSuccessMessage(key) {
