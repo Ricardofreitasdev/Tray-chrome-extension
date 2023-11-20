@@ -2,7 +2,6 @@ import {
   changeUrl,
   getHistory,
   getInlineScriptsWithoutNonce,
-  removeExternalJsFromUrl,
   setHistory,
 } from "../actions/scripts.js";
 
@@ -80,16 +79,15 @@ class BackgroundService {
 
   async jsOff(message, sendResponse) {
     const { tabId, tabUrl } = message;
-    const response = removeExternalJsFromUrl(tabUrl);
+    try {
+      const { message, newUrl } = Actions.removeExternalJsFromUrl(tabUrl);
 
-    if (response.message.error) {
-      sendResponse(response.message.error);
-      return;
+      chrome.tabs.update(tabId, { url: newUrl }, function () {
+        sendResponse(message);
+      });
+    } catch (error) {
+      sendResponse(error.message);
     }
-
-    chrome.tabs.update(tabId, { url: response.newUrl }, function () {
-      sendResponse(response.message.success);
-    });
   }
 
   async getInlineScripts(message, sendResponse) {

@@ -2,6 +2,9 @@ import { ChromeMessages } from "../ChromeMessages.js";
 
 export default class Actions {
   static REMOVE_THEME_PARAM = "layoutOff=1";
+  static REMOVE_JS_FRONT_PARAM = "jsOff=1";
+  static REMOVE_JS_CHECKOUT_PARAM = "js=0";
+
   static FB_CONVERSIONS = "fbConversionsDebug=1";
 
   static CENTRAL_PREFIX = "my-account";
@@ -34,6 +37,34 @@ export default class Actions {
     }
 
     const newUrl = this.addParam(url, this.FB_CONVERSIONS);
+
+    return { newUrl, message };
+  };
+
+  static removeExternalJsFromUrl = (url) => {
+    let param = this.REMOVE_JS_FRONT_PARAM;
+
+    const message = ChromeMessages.getSuccessMessage("JS_REMOVED");
+
+    if (
+      url.includes(this.CENTRAL_PREFIX) ||
+      url.includes(this.CHECKOUT_PREFIX)
+    ) {
+      param = this.REMOVE_JS_CHECKOUT_PARAM;
+    }
+
+    if (url.includes(param)) {
+      throw new Error(ChromeMessages.getErrorMessage("JS_ALREADY_REMOVED"));
+    }
+
+    const hashIndex = url.indexOf("#");
+    const urlWithoutHash = hashIndex >= 0 ? url.substring(0, hashIndex) : url;
+
+    let newUrl = this.addParam(urlWithoutHash, param);
+
+    if (hashIndex >= 0) {
+      newUrl = `${newUrl}${url.substring(hashIndex)}`;
+    }
 
     return { newUrl, message };
   };
