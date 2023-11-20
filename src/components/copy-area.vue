@@ -18,7 +18,7 @@
 
 <script>
 import { ref } from "vue";
-import { useCopy } from "../composables/utils";
+import { useCopy } from "../composables/useCopy";
 export default {
   name: "CopyArea",
   props: {

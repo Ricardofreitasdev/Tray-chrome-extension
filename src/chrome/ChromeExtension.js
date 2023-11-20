@@ -1,17 +1,14 @@
 export default class ChromeExtension {
 
-  async getActiveTab() {
-    return new Promise((resolve) => {
-      chrome.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
-        resolve(tabs[0]);
-      });
-    });
+  async getCurrentTab() {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    return tab;
   }
 
   async sendChromeMessage(action, data) {
-      // eslint-disable-next-line
-    return new Promise(async (resolve) => {
-      const { id: tabId, url: tabUrl } = await this.getActiveTab();
+    const { id: tabId, url: tabUrl } = await this.getCurrentTab();
+
+    return new Promise((resolve) => {
       chrome.runtime.sendMessage({ tabId, tabUrl, action, data }, (response) => {
         resolve(response);
       });
