@@ -1,5 +1,4 @@
 import {
-  addFbDebugParam,
   changeUrl,
   getHistory,
   getInlineScriptsWithoutNonce,
@@ -8,7 +7,7 @@ import {
 } from "../actions/scripts.js";
 
 import environments from "../../config.js";
-import Actions from "../actions/Actios.js";
+import Actions from "../actions/Actions.js";
 import InjectScripts from "../actions/InjectScripts.js";
 import { ChromeMessages } from "../ChromeMessages.js";
 
@@ -56,10 +55,10 @@ class BackgroundService {
     const { tabId, tabUrl } = message;
 
     try {
-      const response = Actions.removeLayoutByParam(tabUrl);
+      const { message, newUrl } = Actions.removeLayoutByParam(tabUrl);
 
-      chrome.tabs.update(tabId, { url: response.newUrl }, function () {
-        sendResponse(response.message);
+      chrome.tabs.update(tabId, { url: newUrl }, function () {
+        sendResponse(message);
       });
     } catch (error) {
       sendResponse(error.message);
@@ -68,16 +67,15 @@ class BackgroundService {
 
   async fbDebug(message, sendResponse) {
     const { tabId, tabUrl } = message;
-    const response = addFbDebugParam(tabUrl);
+    try {
+      const { message, newUrl } = Actions.addFbDebugParam(tabUrl);
 
-    if (response.message.error) {
-      sendResponse(response.message.error);
-      return;
+      chrome.tabs.update(tabId, { url: newUrl }, function () {
+        sendResponse(message);
+      });
+    } catch (error) {
+      sendResponse(error.message);
     }
-
-    chrome.tabs.update(tabId, { url: response.newUrl }, function () {
-      sendResponse(response.message.success);
-    });
   }
 
   async jsOff(message, sendResponse) {
