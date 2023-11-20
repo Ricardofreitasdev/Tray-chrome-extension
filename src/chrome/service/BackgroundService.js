@@ -5,34 +5,36 @@ import {
   getInlineScriptsWithoutNonce,
   removeExternalJsFromUrl,
   setHistory,
-  storeDataByHtml,
   storeIntegrationsByHtml,
 } from "../actions/scripts.js";
 
 import environments from "../../config.js";
 import Actions from "../actions/Actios.js";
+import InjectScripts from "../actions/InjectScripts.js";
+import { ChromeMessages } from "../ChromeMessages.js";
 
 class BackgroundService {
   async getStoreData(message, sendResponse) {
-    chrome.scripting.executeScript(
-      {
-        target: { tabId: message.tabId },
-        func: storeDataByHtml,
-      },
-      async function (result) {
-        if (!result) {
-          return;
-        }
+    try {
+      chrome.scripting
+        .executeScript({
+          target: { tabId: message.tabId },
+          func: InjectScripts.storeDataByHtml,
+        })
+        .then(async (result) => {
+          if (!result) return;
 
-        const response = result[0].result;
+          const response = result[0].result;
 
-        if (response.isTray) {
-          await setHistory(response);
-        }
+          if (response.isTray) {
+            await setHistory(response);
+          }
 
-        sendResponse(response);
-      }
-    );
+          sendResponse(response);
+        });
+    } catch (error) {
+      sendResponse(ChromeMessages.getErrorMessage("DEFAULT"));
+    }
   }
 
   async getStoreIntegrations(message, sendResponse) {
