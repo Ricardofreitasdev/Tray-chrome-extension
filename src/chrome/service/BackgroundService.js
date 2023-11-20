@@ -5,7 +5,6 @@ import {
   getInlineScriptsWithoutNonce,
   removeExternalJsFromUrl,
   setHistory,
-  storeIntegrationsByHtml,
 } from "../actions/scripts.js";
 
 import environments from "../../config.js";
@@ -38,15 +37,19 @@ class BackgroundService {
   }
 
   async getStoreIntegrations(message, sendResponse) {
-    chrome.scripting.executeScript(
-      {
-        target: { tabId: message.tabId },
-        func: storeIntegrationsByHtml,
-      },
-      function (result) {
-        sendResponse(result[0].result);
-      }
-    );
+    try {
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: message.tabId },
+          func: InjectScripts.storeIntegrationsByHtml,
+        },
+        function (result) {
+          sendResponse(result[0].result);
+        }
+      );
+    } catch (error) {
+      sendResponse(ChromeMessages.getErrorMessage("DEFAULT"));
+    }
   }
 
   async layoutOff(message, sendResponse) {

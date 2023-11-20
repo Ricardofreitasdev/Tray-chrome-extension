@@ -35,4 +35,39 @@ export default class InjectScripts {
 
     return store;
   };
+
+  static storeIntegrationsByHtml = () => {
+    const gtmCode =
+      document
+        .querySelector('script[src*="googletagmanager.com/gtm.js?id="]')
+        ?.getAttribute("src")
+        ?.match(/id=([^&]*)/)[1] ?? "";
+
+    const ga4Id =
+      document
+        .querySelector('script[src*="googletagmanager.com/gtag/js?id=G-"]')
+        ?.getAttribute("src")
+        ?.match(/id=(.*?)&/)[1] ?? "";
+
+    const UA =
+      document
+        .querySelector('script[src*="googletagmanager.com/gtag/js?id=UA-"]')
+        ?.getAttribute("src")
+        ?.match(/id=(UA-\w+-\d+)/)?.[1] ?? "";
+
+    const fbPixelId =
+      document
+        .querySelector('script[src*="facebook-conversion.js?pixel="]')
+        ?.getAttribute("src")
+        ?.match(/pixel=(\d+)/)[1] ?? "";
+
+    const integrations = {
+      gtm: gtmCode,
+      analyticsGa4: ga4Id,
+      analyticsUa: UA,
+      facebookPixel: fbPixelId,
+    };
+
+    return integrations;
+  };
 }
