@@ -70,4 +70,26 @@ export default class InjectScripts {
 
     return integrations;
   };
+
+  static getInlineScriptsWithoutNonce = () => {
+    const inlineScripts = [];
+    const scriptElements = document.querySelectorAll("script:not([src])");
+
+    scriptElements.forEach((script) => {
+      if (
+        !script.hasAttribute("nonce") ||
+        script.getAttribute("nonce") == null
+      ) {
+        const scriptContent = script.textContent;
+        const limitedContent =
+          scriptContent.length > 750
+            ? scriptContent.slice(0, 750) + "..."
+            : scriptContent;
+
+        inlineScripts.push(limitedContent);
+      }
+    });
+    const totalBlockedScripts = inlineScripts.length;
+    return { inlineScripts, totalBlockedScripts };
+  };
 }

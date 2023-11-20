@@ -1,9 +1,4 @@
-import {
-  changeUrl,
-  getHistory,
-  getInlineScriptsWithoutNonce,
-  setHistory,
-} from "../actions/scripts.js";
+import { changeUrl, getHistory, setHistory } from "../actions/scripts.js";
 
 import environments from "../../config.js";
 import Actions from "../actions/Actions.js";
@@ -91,15 +86,19 @@ class BackgroundService {
   }
 
   async getInlineScripts(message, sendResponse) {
-    chrome.scripting.executeScript(
-      {
-        target: { tabId: message.tabId },
-        func: getInlineScriptsWithoutNonce,
-      },
-      function (result) {
-        sendResponse(result[0].result);
-      }
-    );
+    try {
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: message.tabId },
+          func: InjectScripts.getInlineScriptsWithoutNonce,
+        },
+        function (result) {
+          sendResponse(result[0].result);
+        }
+      );
+    } catch (error) {
+      sendResponse(ChromeMessages.getErrorMessage("DEFAULT"));
+    }
   }
 
   async getStoreHistory(message, sendResponse) {
