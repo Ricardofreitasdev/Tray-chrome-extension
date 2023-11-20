@@ -1,4 +1,4 @@
-import { changeUrl, getHistory, setHistory } from "../actions/scripts.js";
+import { changeUrl, setHistory } from "../actions/scripts.js";
 
 import environments from "../../config.js";
 import Actions from "../actions/Actions.js";
@@ -102,8 +102,12 @@ class BackgroundService {
   }
 
   async getStoreHistory(message, sendResponse) {
-    const response = await getHistory();
-    sendResponse(response);
+    try {
+      const response = await Actions.getHistory();
+      sendResponse(response);
+    } catch (error) {
+      sendResponse(error.message);
+    }
   }
 
   async changeEnvironment(message, sendResponse) {

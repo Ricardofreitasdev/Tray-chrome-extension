@@ -69,6 +69,19 @@ export default class Actions {
     return { newUrl, message };
   };
 
+  static getHistory = async () => {
+    const { history } = await new Promise((resolve, reject) => {
+      chrome.storage.local.get("history", (data) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+    return history;
+  };
+
   static addParam(url, param) {
     const separator = url.includes("?") ? "&" : "?";
     return `${url}${separator}${param}`;
