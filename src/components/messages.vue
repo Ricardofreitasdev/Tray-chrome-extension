@@ -5,14 +5,12 @@
 </template>
 
 <script>
-import { computed } from "vue";
-import { useStore } from "vuex";
+import useNotificarion from "../composables/useNotification";
 
 export default {
   name: "AppMessages",
   setup() {
-    const store = useStore();
-    const notification = computed(() => store.state.notification);
+    const { notification } = useNotificarion();
     return {
       notification,
     };

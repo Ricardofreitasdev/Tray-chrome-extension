@@ -35,13 +35,11 @@ export const removeLayoutByParam = (url) => {
   };
 
   if (url.includes("my-account") || url.includes("checkout")) {
-    message.error = `Essa pagina não é um tema`;
-    return { newUrl: null, message };
+    throw new Error(`Essa pagina não é um tema`);
   }
 
   if (url.includes("layoutOff")) {
-    message.error = `Essa pagina já esta sem o tema`;
-    return { newUrl: null, message };
+    throw new Error(`Essa pagina já esta com o tema removido!`);
   }
 
   const newUrl = addParamToUrl(url, param);

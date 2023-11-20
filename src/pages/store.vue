@@ -18,7 +18,9 @@
         <a @click="removeExternalScripts">Remover Scripts Externos</a>
       </p>
       <p v-show="isEasy" class="item">
-        <a @click="verifyInlineScript">[CSP] Report de scripts inline sem nonce</a>
+        <a @click="verifyInlineScript"
+          >[CSP] Report de scripts inline sem nonce</a
+        >
       </p>
       <hr />
       <app-history />
@@ -29,9 +31,9 @@
 
 <script>
 import { ref, onMounted, computed, inject } from "vue";
-import { useStore } from "vuex";
 import AppHistory from "../components/tools/history.vue";
-import CopyArea from '../components/copy-area.vue';
+import CopyArea from "../components/copy-area.vue";
+import useNotification from "../composables/useNotification";
 
 export default {
   name: "Store",
@@ -41,12 +43,12 @@ export default {
   },
 
   setup() {
-    const chromeExtension = inject('chromeExtension');
+    const chromeExtension = inject("chromeExtension");
+    const { setNotification } = useNotification();
     const store = ref({});
     const url = ref("");
     const isTray = ref(false);
     const hasCSP = ref(false);
-    const vuex = useStore();
     const currentUrl = ref("");
 
     onMounted(async () => {
@@ -79,24 +81,24 @@ export default {
 
     const removeTheme = async () => {
       const response = await chromeExtension.layoutOff();
-      vuex.commit("setNotification", response);
+      setNotification(response);
     };
 
     const removeExternalScripts = async () => {
       const response = await chromeExtension.jsOff();
-      vuex.commit("setNotification", response);
+      setNotification(response);
     };
 
     const facebookConversions = async () => {
       const response = await chromeExtension.fbDebug();
-      vuex.commit("setNotification", response);
+      setNotification(response);
     };
 
     const isEasy = computed(() => currentUrl.value.includes("checkout"));
 
     const createCSPReport = (data, total) => {
       let scriptReport = `Total de Scripts Bloqueados: ${total}\n\n`;
-      
+
       data.forEach((script, index) => {
         scriptReport += `Script ${index + 1}:\n`;
         scriptReport += `-------------------------------------------\n`;
@@ -116,11 +118,11 @@ export default {
     };
 
     const verifyInlineScript = async () => {
-      const { inlineScripts, totalBlockedScripts} = await chromeExtension.getInlineScripts();
+      const { inlineScripts, totalBlockedScripts } =
+        await chromeExtension.getInlineScripts();
 
       if (!hasCSP.value) {
-        vuex.commit(
-          "setNotification",
+        setNotification(
           `A loja ${store.value.id.value} não esta com CSP ativo`
         );
         return;
@@ -129,15 +131,13 @@ export default {
       if (totalBlockedScripts > 0) {
         createCSPReport(inlineScripts, totalBlockedScripts);
 
-        vuex.commit(
-          "setNotification",
+        setNotification(
           `Acesse os seus downloads para verificar os scripts bloqueado na loja ${store.value.id.value}`
         );
         return;
       }
 
-      vuex.commit(
-        "setNotification",
+      setNotification(
         `A loja ${store.value.id.value} não tem scripts inlines sem nonce`
       );
     };

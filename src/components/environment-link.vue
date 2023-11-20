@@ -6,7 +6,7 @@
 
 <script>
 import { inject, onMounted, ref } from "vue";
-import { useStore } from "vuex";
+import useNotification from "../composables/useNotification";
 export default {
   name: "AppEnvironmentLink",
   props: {
@@ -26,8 +26,8 @@ export default {
 
   setup() {
     const currentUrl = ref("");
-    const vuex = useStore();
-    const chromeExtension = inject('chromeExtension');
+    const chromeExtension = inject("chromeExtension");
+    const { setNotification } = useNotification();
 
     onMounted(async () => {
       const storeData = await chromeExtension.getStoreData();
@@ -40,7 +40,7 @@ export default {
         environment: env,
       });
 
-      vuex.commit("setNotification", response);
+      setNotification(response);
     };
     return { changeUrl };
   },

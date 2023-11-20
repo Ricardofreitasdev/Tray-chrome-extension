@@ -42,7 +42,7 @@
 
 <script>
 import { ref, onMounted, computed, inject } from "vue";
-import { useCopy } from '../../composables/utils';
+import { useCopy } from '../../composables/useCopy';
 export default {
   name: "AppExternalLinks",
 

@@ -4,18 +4,16 @@ import {
   getHistory,
   getInlineScriptsWithoutNonce,
   removeExternalJsFromUrl,
-  removeLayoutByParam,
   setHistory,
   storeDataByHtml,
   storeIntegrationsByHtml,
 } from "../actions/scripts.js";
 
 import environments from "../../config.js";
+import Actions from "../actions/Actios.js";
 
 class BackgroundService {
-
   async getStoreData(message, sendResponse) {
-
     chrome.scripting.executeScript(
       {
         target: { tabId: message.tabId },
@@ -51,16 +49,16 @@ class BackgroundService {
 
   async layoutOff(message, sendResponse) {
     const { tabId, tabUrl } = message;
-    const response = removeLayoutByParam(tabUrl);
 
-    if (response.message.error) {
-      sendResponse(response.message.error);
-      return;
+    try {
+      const response = Actions.removeLayoutByParam(tabUrl);
+
+      chrome.tabs.update(tabId, { url: response.newUrl }, function () {
+        sendResponse(response.message);
+      });
+    } catch (error) {
+      sendResponse(error.message);
     }
-    
-    chrome.tabs.update(tabId, { url: response.newUrl }, function () {
-      sendResponse(response.message.success);
-    });
   }
 
   async fbDebug(message, sendResponse) {
@@ -71,7 +69,7 @@ class BackgroundService {
       sendResponse(response.message.error);
       return;
     }
-    
+
     chrome.tabs.update(tabId, { url: response.newUrl }, function () {
       sendResponse(response.message.success);
     });
@@ -85,7 +83,7 @@ class BackgroundService {
       sendResponse(response.message.error);
       return;
     }
-    
+
     chrome.tabs.update(tabId, { url: response.newUrl }, function () {
       sendResponse(response.message.success);
     });
@@ -122,7 +120,6 @@ class BackgroundService {
   }
 
   async clearCache(message, sendResponse) {
-
     chrome.browsingData.remove(
       {
         originTypes: {

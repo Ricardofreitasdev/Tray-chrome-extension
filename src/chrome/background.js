@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener((
   const method = backgroundService[message.action];
 
   if (method) {
-    method(message, sendResponse);
+    method(message, sendResponse, sender);
   }
 
   return true;
