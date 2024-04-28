@@ -3,7 +3,6 @@ import { computed, ref, watch } from 'vue';
 const notification = ref('');
 
 export default function useNotification() {
-
   const setNotification = (message) => {
     notification.value = message;
   };

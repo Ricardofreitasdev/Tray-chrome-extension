@@ -1,16 +1,18 @@
-import BackgroundService from './service/BackgroundService.js';
-const backgroundService = new BackgroundService();
+import { Messages } from './messages/index.js';
+import BackgroundService from './service/index.js';
 
-chrome.runtime.onMessage.addListener((
-  message,
-  sender,
-  sendResponse
-  ) => {
-  const method = backgroundService[message.action];
+const listener = (message, sender, sendResponse) => {
+  const method = BackgroundService[message.action];
 
   if (method) {
-    method(message, sendResponse, sender);
+    try {
+      method(message, sendResponse, sender);
+    } catch (error) {
+      sendResponse(Messages.error('DEFAULT'));
+    }
   }
 
   return true;
-});
+};
+
+chrome.runtime.onMessage.addListener(listener);

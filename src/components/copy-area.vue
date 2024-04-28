@@ -4,61 +4,46 @@
     @mouseenter="showCopyIcon = true"
     @mouseleave="showCopyIcon = false"
   >
-    <span title="click para copiar" @click="copyText">{{
-      limitString(text)
-    }}</span>
+    <span title="Click para copiar" @click="copyText">
+      {{ limitString(text) }}
+    </span>
     <i
       v-show="showCopyIcon && !showCheckIcon"
       class="fa-regular fa-copy"
       @click="copyText"
-    ></i>
-    <i v-show="showCheckIcon" class="fa-solid fa-check"></i>
+    />
+    <i v-show="showCheckIcon" class="fa-solid fa-check" />
   </div>
 </template>
 
-<script>
-import { ref } from "vue";
-import { useCopy } from "../composables/useCopy";
-export default {
-  name: "CopyArea",
-  props: {
-    text: {
-      type: String,
-      required: true,
-    },
+<script setup>
+import { ref } from 'vue';
+import { useCopy } from '../composables/useCopy';
+
+const props = defineProps({
+  text: {
+    type: String,
+    required: true,
   },
+});
 
-  setup(props) {
-    const { copy } = useCopy();
-    const showCopyIcon = ref(false);
-    const showCheckIcon = ref(false);
+const { copy } = useCopy();
+const showCopyIcon = ref(false);
+const showCheckIcon = ref(false);
 
-    const copyText = () => {
-      copy(props.text);
-      showCopyIcon.value = false;
-      showCheckIcon.value = true;
+const copyText = () => {
+  copy(props.text);
+  showCopyIcon.value = false;
+  showCheckIcon.value = true;
 
-      setTimeout(() => {
-        showCheckIcon.value = false;
-      }, 3000);
-    };
+  setTimeout(() => {
+    showCheckIcon.value = false;
+  }, 3000);
+};
 
-    const limitString = (text) => {
-      const limit = 20;
-      if (text.length > limit) {
-        return text.substring(0, limit) + "...";
-      } else {
-        return text;
-      }
-    };
-
-    return { 
-      copyText,
-      limitString,
-      showCopyIcon,
-      showCheckIcon,
-    };
-  },
+const limitString = (text) => {
+  const limit = 20;
+  return text.length > limit ? `${text.substring(0, limit)}...` : text;
 };
 </script>
 

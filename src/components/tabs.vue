@@ -13,44 +13,36 @@
     <div class="tab-area">
       <div
         v-for="(tab, index) in tabs"
-        :key="index"
+        :key="tab"
         :class="['tab-content', { 'tab-active': activeTab === index }]"
         class="tab-content"
       >
-        <slot :name="tabName(index)" />
+        <slot v-if="activeTab === index" :name="tabName(index)" />
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import environments from "../config";
+<script setup>
+import { onMounted, ref } from 'vue';
+import environments from '../config';
 
-export default {
-  name: "Tabs",
-  data() {
-    return {
-      activeTab: 0,
-      tabs: ["Loja", "Ferramentas"],
-    };
-  },
+const activeTab = ref(0);
+const tabs = ref(['Loja', 'Ferramentas']);
 
-  mounted() {
-    this.hasEnvs();
-  },
+onMounted(() => {
+  setDevEnvironment();
+});
 
-  methods: {
-    tabName(index) {
-      return `tab-content-${index}`;
-    },
+const setDevEnvironment = () => {
+  const hasEnvs = environments.easy || environments.central;
+  if (hasEnvs) {
+    tabs.value.push('Dev');
+  }
+};
 
-    hasEnvs() {
-      const hasEnvs = environments.easy || environments.central;
-      if (hasEnvs) {
-        this.tabs.push("Dev");
-      }
-    },
-  },
+const tabName = (index) => {
+  return `tab-content-${index}`;
 };
 </script>
 
@@ -86,7 +78,9 @@ export default {
   height: 100%;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s, transform 0.5s;
+  transition:
+    opacity 0.2s,
+    transform 0.5s;
   transform: translateX(-50px);
 }
 

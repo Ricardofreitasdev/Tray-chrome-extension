@@ -18,9 +18,9 @@
         <a @click="removeExternalScripts">Remover Scripts Externos</a>
       </p>
       <p v-show="isEasy" class="item">
-        <a @click="verifyInlineScript"
-          >[CSP] Report de scripts inline sem nonce</a
-        >
+        <a @click="verifyInlineScript">
+          [CSP] Report de scripts inline sem nonce
+        </a>
       </p>
       <hr />
       <app-history />
@@ -29,130 +29,107 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted, computed, inject } from "vue";
-import AppHistory from "../components/tools/history.vue";
-import CopyArea from "../components/copy-area.vue";
-import useNotification from "../composables/useNotification";
+<script setup>
+import { ref, onMounted, computed, inject } from 'vue';
+import AppHistory from '../components/tools/history.vue';
+import CopyArea from '../components/copy-area.vue';
+import useNotification from '../composables/useNotification';
+import useStoreData from '../composables/useStoreData';
 
-export default {
-  name: "Store",
-  components: {
-    AppHistory,
-    CopyArea,
-  },
+const chromeExtension = inject('chromeExtension');
 
-  setup() {
-    const chromeExtension = inject("chromeExtension");
-    const { setNotification } = useNotification();
-    const store = ref({});
-    const url = ref("");
-    const isTray = ref(false);
-    const hasCSP = ref(false);
-    const currentUrl = ref("");
+const { setNotification } = useNotification();
+const { setStoreData } = useStoreData();
 
-    onMounted(async () => {
-      const storeData = await chromeExtension.getStoreData();
-      const storeIntegrations = await chromeExtension.getStoreIntegrations();
-      currentUrl.value = storeData.currentUrl;
+const store = ref({});
+const url = ref('');
+const isTray = ref(false);
+const hasCSP = ref(false);
+const currentUrl = ref('');
 
-      store.value = {
-        id: { value: storeData.id, label: "Loja" },
-        session: { value: storeData.session, label: "Sessão" },
-        gtm: { value: storeIntegrations.gtm, label: "Gtm" },
-        ga4: { value: storeIntegrations.analyticsGa4, label: "Ga4" },
-        ua: { value: storeIntegrations.analyticsUa, label: "UA" },
-        pixel: { value: storeIntegrations.facebookPixel, label: "Pixel" },
-      };
+onMounted(async () => {
+  const storeData = await chromeExtension.action('getStoreData');
+  setStoreData(storeData);
 
-      url.value = storeData.url;
-      isTray.value = storeData.isTray;
-      hasCSP.value = storeData.hasCSP;
-    });
+  const storeIntegrations = await chromeExtension.action(
+    'getStoreIntegrations'
+  );
+  currentUrl.value = storeData.currentUrl;
 
-    const limitString = (text) => {
-      const limit = 20;
-      if (text.length > limit) {
-        return text.substring(0, limit) + "...";
-      } else {
-        return text;
-      }
-    };
+  store.value = {
+    id: { value: storeData.id, label: 'Loja' },
+    session: { value: storeData.session, label: 'Sessão' },
+    gtm: { value: storeIntegrations.gtm, label: 'Gtm' },
+    ga4: { value: storeIntegrations.analyticsGa4, label: 'Ga4' },
+    ua: { value: storeIntegrations.analyticsUa, label: 'UA' },
+    pixel: { value: storeIntegrations.facebookPixel, label: 'Pixel' },
+  };
 
-    const removeTheme = async () => {
-      const response = await chromeExtension.layoutOff();
-      setNotification(response);
-    };
+  url.value = storeData.url;
+  isTray.value = storeData.isTray;
+  hasCSP.value = storeData.hasCSP;
+});
 
-    const removeExternalScripts = async () => {
-      const response = await chromeExtension.jsOff();
-      setNotification(response);
-    };
+const removeTheme = async () => {
+  const response = await chromeExtension.action('layoutOff');
+  setNotification(response);
+};
 
-    const facebookConversions = async () => {
-      const response = await chromeExtension.fbDebug();
-      setNotification(response);
-    };
+const removeExternalScripts = async () => {
+  const response = await chromeExtension.action('jsOff');
+  setNotification(response);
+};
 
-    const isEasy = computed(() => currentUrl.value.includes("checkout"));
+const facebookConversions = async () => {
+  const response = await chromeExtension.action('fbDebug');
+  setNotification(response);
+};
 
-    const createCSPReport = (data, total) => {
-      let scriptReport = `Total de Scripts Bloqueados: ${total}\n\n`;
+const isEasy = computed(() => currentUrl.value.includes('checkout'));
 
-      data.forEach((script, index) => {
-        scriptReport += `Script ${index + 1}:\n`;
-        scriptReport += `-------------------------------------------\n`;
-        scriptReport += `${script}\n\n`;
-      });
+const createCSPReport = (data, total) => {
+  let scriptReport = `Total de Scripts Bloqueados: ${total}\n\n`;
 
-      const blob = new Blob([scriptReport], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
+  data.forEach((script, index) => {
+    scriptReport += `Script ${index + 1}:\n`;
+    scriptReport += '-------------------------------------------\n';
+    scriptReport += `${script}\n\n`;
+  });
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `scripts_inline_sem_nonce_loja-${store.value.id.value}.txt`;
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    };
+  const blob = new Blob([scriptReport], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
 
-    const verifyInlineScript = async () => {
-      const { inlineScripts, totalBlockedScripts } =
-        await chromeExtension.getInlineScripts();
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `scripts_inline_sem_nonce_loja-${store.value.id.value}.txt`;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+};
 
-      if (!hasCSP.value) {
-        setNotification(
-          `A loja ${store.value.id.value} não esta com CSP ativo`
-        );
-        return;
-      }
+const verifyInlineScript = async () => {
+  const { inlineScripts, totalBlockedScripts } =
+    await chromeExtension.action('getInlineScripts');
 
-      if (totalBlockedScripts > 0) {
-        createCSPReport(inlineScripts, totalBlockedScripts);
+  if (!hasCSP.value) {
+    setNotification(`A loja ${store.value.id.value} não esta com CSP ativo`);
+    return;
+  }
 
-        setNotification(
-          `Acesse os seus downloads para verificar os scripts bloqueado na loja ${store.value.id.value}`
-        );
-        return;
-      }
+  if (totalBlockedScripts > 0) {
+    createCSPReport(inlineScripts, totalBlockedScripts);
 
-      setNotification(
-        `A loja ${store.value.id.value} não tem scripts inlines sem nonce`
-      );
-    };
+    setNotification(
+      `Acesse os seus downloads para verificar os scripts
+      bloqueado na loja ${store.value.id.value}`
+    );
+    return;
+  }
 
-    return {
-      store,
-      isTray,
-      isEasy,
-      limitString,
-      removeTheme,
-      removeExternalScripts,
-      facebookConversions,
-      verifyInlineScript,
-    };
-  },
+  setNotification(
+    `A loja ${store.value.id.value} não tem scripts inlines sem nonce`
+  );
 };
 </script>
 

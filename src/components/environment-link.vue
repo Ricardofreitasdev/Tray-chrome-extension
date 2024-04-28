@@ -1,48 +1,35 @@
 <template>
   <p class="item">
-    <a @click="changeUrl(environment)">{{ text }}</a>
+    <a @click="changeUrl(props.environment)">{{ props.text }}</a>
   </p>
 </template>
 
-<script>
-import { inject, onMounted, ref } from "vue";
-import useNotification from "../composables/useNotification";
-export default {
-  name: "AppEnvironmentLink",
-  props: {
-    environment: {
-      type: String,
-      required: true,
-    },
-    text: {
-      type: String,
-      required: true,
-    },
-    separator: {
-      type: Boolean,
-      required: false,
-    },
+<script setup>
+import { inject } from 'vue';
+import useNotification from '../composables/useNotification';
+import useStoreData from '../composables/useStoreData';
+const props = defineProps({
+  environment: {
+    type: String,
+    required: true,
   },
-
-  setup() {
-    const currentUrl = ref("");
-    const chromeExtension = inject("chromeExtension");
-    const { setNotification } = useNotification();
-
-    onMounted(async () => {
-      const storeData = await chromeExtension.getStoreData();
-      currentUrl.value = storeData.currentUrl;
-    });
-
-    const changeUrl = async (env) => {
-      const response = await chromeExtension.changeEnvironment({
-        currentUrl: currentUrl.value,
-        environment: env,
-      });
-
-      setNotification(response);
-    };
-    return { changeUrl };
+  text: {
+    type: String,
+    required: true,
   },
+});
+
+const chromeExtension = inject('chromeExtension');
+const { setNotification } = useNotification();
+
+const { currentUrl } = useStoreData();
+
+const changeUrl = async (env) => {
+  const response = await chromeExtension.action('changeEnvironment', {
+    currentUrl: currentUrl.value,
+    environment: env,
+  });
+
+  setNotification(response);
 };
 </script>

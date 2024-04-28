@@ -12,26 +12,16 @@
       </template>
     </Tabs>
     <Messages />
-    <footer class="footer-message">version 1.0.2</footer>
+    <footer class="footer-message">version 1.0.0</footer>
   </div>
 </template>
 
-<script>
-import Tabs from "./components/tabs.vue";
-import Store from "./pages/store.vue";
-import Dev from "./pages/dev.vue";
-import Settings from "./pages/settings.vue";
-import Messages from "./components/messages.vue";
-
-export default {
-  components: {
-    Tabs,
-    Store,
-    Settings,
-    Messages,
-    Dev,
-  },
-};
+<script setup>
+import Tabs from './components/tabs.vue';
+import Store from './pages/store.vue';
+import Dev from './pages/dev.vue';
+import Settings from './pages/settings.vue';
+import Messages from './components/messages.vue';
 </script>
 
 <style scoped>
