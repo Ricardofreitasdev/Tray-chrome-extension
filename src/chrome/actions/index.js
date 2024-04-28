@@ -8,7 +8,7 @@ const CENTRAL_PREFIX = 'my-account';
 const CHECKOUT_PREFIX = 'checkout';
 
 export const removeLayoutByParam = (url) => {
-  const response = Messages.success('THEME_REMOVED');
+  const message = Messages.success('THEME_REMOVED');
 
   if (url.includes(CENTRAL_PREFIX) || url.includes(CHECKOUT_PREFIX)) {
     throw new Error(Messages.error('INVALID_PAGE'));
@@ -20,7 +20,7 @@ export const removeLayoutByParam = (url) => {
 
   const newUrl = addParam(url, REMOVE_THEME_PARAM);
 
-  return { newUrl, response };
+  return { newUrl, message };
 };
 
 export const addFbDebugParam = (url) => {

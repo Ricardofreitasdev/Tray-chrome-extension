@@ -14,101 +14,80 @@ import {
   storeIntegrationsByHtml,
 } from '../scripts/index.js';
 
-export default class BackgroundService {
+const BackgroundService = {
   async getStoreData(message, sendResponse) {
     try {
-      chrome.scripting
-        .executeScript({
-          target: { tabId: message.tabId },
-          func: storeDataByHtml,
-        })
-        .then(async (result) => {
-          if (!result) return;
+      const [{ result }] = await chrome.scripting.executeScript({
+        target: { tabId: message.tabId },
+        func: storeDataByHtml,
+      });
 
-          const response = result[0].result;
+      if (result.isTray) {
+        await setHistory(result);
+      }
 
-          if (response.isTray) {
-            await setHistory(response);
-          }
-
-          sendResponse(response);
-        });
+      sendResponse(result);
     } catch (error) {
       sendResponse(Messages.error('DEFAULT'));
     }
-  }
+  },
 
   async getStoreIntegrations(message, sendResponse) {
     try {
-      chrome.scripting.executeScript(
-        {
-          target: { tabId: message.tabId },
-          func: storeIntegrationsByHtml,
-        },
-        function (result) {
-          sendResponse(result[0].result);
-        }
-      );
+      const [{ result }] = await chrome.scripting.executeScript({
+        target: { tabId: message.tabId },
+        func: storeIntegrationsByHtml,
+      });
+
+      sendResponse(result);
     } catch (error) {
       sendResponse(Messages.error('DEFAULT'));
     }
-  }
+  },
+
+  async getInlineScripts(message, sendResponse) {
+    try {
+      const [{ result }] = await chrome.scripting.executeScript({
+        target: { tabId: message.tabId },
+        func: getInlineScriptsWithoutNonce,
+      });
+
+      sendResponse(result);
+    } catch (error) {
+      sendResponse(Messages.error('DEFAULT'));
+    }
+  },
 
   async layoutOff(message, sendResponse) {
     const { tabId, tabUrl } = message;
 
     try {
       const { message, newUrl } = removeLayoutByParam(tabUrl);
-
-      chrome.tabs.update(tabId, { url: newUrl }, function () {
-        sendResponse(message);
-      });
+      chrome.tabs.update(tabId, { url: newUrl }, () => sendResponse(message));
     } catch (error) {
       sendResponse(error.message);
     }
-  }
+  },
 
   async fbDebug(message, sendResponse) {
     const { tabId, tabUrl } = message;
     try {
       const { message, newUrl } = addFbDebugParam(tabUrl);
-
-      chrome.tabs.update(tabId, { url: newUrl }, function () {
-        sendResponse(message);
-      });
+      chrome.tabs.update(tabId, { url: newUrl }, () => sendResponse(message));
     } catch (error) {
       sendResponse(error.message);
     }
-  }
+  },
 
   async jsOff(message, sendResponse) {
     const { tabId, tabUrl } = message;
     try {
       const { message, newUrl } = removeExternalJsFromUrl(tabUrl);
-
-      chrome.tabs.update(tabId, { url: newUrl }, function () {
-        sendResponse(message);
-      });
+      chrome.tabs.update(tabId, { url: newUrl }, () => sendResponse(message));
     } catch (error) {
       sendResponse(error.message);
     }
-  }
-
-  async getInlineScripts(message, sendResponse) {
-    try {
-      chrome.scripting.executeScript(
-        {
-          target: { tabId: message.tabId },
-          func: getInlineScriptsWithoutNonce,
-        },
-        function (result) {
-          sendResponse(result[0].result);
-        }
-      );
-    } catch (error) {
-      sendResponse(Messages.error('DEFAULT'));
-    }
-  }
+  },
 
   async getStoreHistory(_, sendResponse) {
     try {
@@ -117,20 +96,17 @@ export default class BackgroundService {
     } catch (error) {
       sendResponse(error.message);
     }
-  }
+  },
 
   async changeEnvironment(message, sendResponse) {
     const { tabId, data } = message;
     try {
       const { message, newUrl } = changeUrl(data, environments);
-
-      chrome.tabs.update(tabId, { url: newUrl }, function () {
-        sendResponse(message);
-      });
+      chrome.tabs.update(tabId, { url: newUrl }, () => sendResponse(message));
     } catch (error) {
       sendResponse(error.message);
     }
-  }
+  },
 
   async clearCache(_, sendResponse) {
     try {
@@ -156,5 +132,7 @@ export default class BackgroundService {
     } catch (error) {
       sendResponse(Messages.error('STORAGE'));
     }
-  }
-}
+  },
+};
+
+export default BackgroundService;

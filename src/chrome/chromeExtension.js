@@ -1,11 +1,11 @@
-export default class ChromeExtension {
+const ChromeExtension = {
   async getCurrentTab() {
     const [tab] = await chrome.tabs.query({
       active: true,
       currentWindow: true,
     });
     return tab;
-  }
+  },
 
   async sendChromeMessage(action, data) {
     const { id: tabId, url: tabUrl } = await this.getCurrentTab();
@@ -18,9 +18,11 @@ export default class ChromeExtension {
         }
       );
     });
-  }
+  },
 
   async action(action, data = {}) {
     return await this.sendChromeMessage(action, data);
-  }
-}
+  },
+};
+
+export default ChromeExtension;

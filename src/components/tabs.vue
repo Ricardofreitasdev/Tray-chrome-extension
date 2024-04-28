@@ -17,7 +17,7 @@
         :class="['tab-content', { 'tab-active': activeTab === index }]"
         class="tab-content"
       >
-        <slot :name="tabName(index)" />
+        <slot v-if="activeTab === index" :name="tabName(index)" />
       </div>
     </div>
   </div>
@@ -31,20 +31,19 @@ const activeTab = ref(0);
 const tabs = ref(['Loja', 'Ferramentas']);
 
 onMounted(() => {
-  setDevEnvironment()
-})
+  setDevEnvironment();
+});
 
 const setDevEnvironment = () => {
   const hasEnvs = environments.easy || environments.central;
   if (hasEnvs) {
-    this.tabs.push('Dev');
+    tabs.value.push('Dev');
   }
-}
+};
 
 const tabName = (index) => {
   return `tab-content-${index}`;
-}
-
+};
 </script>
 
 <style lang="scss">
@@ -79,7 +78,9 @@ const tabName = (index) => {
   height: 100%;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s, transform 0.5s;
+  transition:
+    opacity 0.2s,
+    transform 0.5s;
   transform: translateX(-50px);
 }
 

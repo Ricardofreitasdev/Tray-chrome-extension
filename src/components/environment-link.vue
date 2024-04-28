@@ -5,8 +5,9 @@
 </template>
 
 <script setup>
-import { inject, onMounted, ref } from 'vue';
+import { inject } from 'vue';
 import useNotification from '../composables/useNotification';
+import useStoreData from '../composables/useStoreData';
 const props = defineProps({
   environment: {
     type: String,
@@ -18,14 +19,10 @@ const props = defineProps({
   },
 });
 
-const currentUrl = ref('');
 const chromeExtension = inject('chromeExtension');
 const { setNotification } = useNotification();
 
-onMounted(async () => {
-  const storeData = await chromeExtension.action('getStoreData');
-  currentUrl.value = storeData.currentUrl;
-});
+const { currentUrl } = useStoreData();
 
 const changeUrl = async (env) => {
   const response = await chromeExtension.action('changeEnvironment', {

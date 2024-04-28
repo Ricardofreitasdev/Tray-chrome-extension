@@ -37,21 +37,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, inject } from 'vue';
+import { computed } from 'vue';
+import useStoreData from '../../composables/useStoreData';
 
-const chromeExtension = inject('chromeExtension');
-
-const url = ref('');
-const currentUrl = ref('');
-const isTray = ref(false);
-
-onMounted(async () => {
-  const storeData = await chromeExtension.action('getStoreData');
-
-  url.value = storeData.url;
-  currentUrl.value = storeData.currentUrl;
-  isTray.value = storeData.isTray;
-});
+const { currentUrl, isTray, url } = useStoreData();
 
 const pageSpeedUrl = computed(() => {
   return `http://developers.google.com/speed/pagespeed/insights/?url=${url.value}`;

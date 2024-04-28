@@ -1,8 +1,6 @@
 <template>
   <div>
-    <button class="button" @click="clear">
-      Limpar Storage
-    </button>
+    <button class="button" @click="clear">Limpar Storage</button>
   </div>
 </template>
 

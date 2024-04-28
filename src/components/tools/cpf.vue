@@ -1,8 +1,6 @@
 <template>
   <div>
-    <button class="button" @click="gerarCPF">
-      Gerar CPF
-    </button>
+    <button class="button" @click="gerarCPF">Gerar CPF</button>
     <copy-area :text="cpf" />
   </div>
 </template>

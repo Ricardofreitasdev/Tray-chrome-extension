@@ -14,8 +14,7 @@ const storeHistory = ref([]);
 const chromeExtension = inject('chromeExtension');
 
 onMounted(async () => {
-  const history = await chromeExtension.action('getStoreHistory');
-  storeHistory.value = history;
+  storeHistory.value = await chromeExtension.action('getStoreHistory');
 });
 </script>
 

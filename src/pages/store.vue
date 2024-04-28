@@ -34,9 +34,12 @@ import { ref, onMounted, computed, inject } from 'vue';
 import AppHistory from '../components/tools/history.vue';
 import CopyArea from '../components/copy-area.vue';
 import useNotification from '../composables/useNotification';
+import useStoreData from '../composables/useStoreData';
 
 const chromeExtension = inject('chromeExtension');
+
 const { setNotification } = useNotification();
+const { setStoreData } = useStoreData();
 
 const store = ref({});
 const url = ref('');
@@ -46,6 +49,8 @@ const currentUrl = ref('');
 
 onMounted(async () => {
   const storeData = await chromeExtension.action('getStoreData');
+  setStoreData(storeData);
+
   const storeIntegrations = await chromeExtension.action(
     'getStoreIntegrations'
   );

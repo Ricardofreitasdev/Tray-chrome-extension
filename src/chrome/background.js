@@ -1,9 +1,8 @@
 import { Messages } from './messages/index.js';
 import BackgroundService from './service/index.js';
-const backgroundService = new BackgroundService();
 
 const listener = (message, sender, sendResponse) => {
-  const method = backgroundService[message.action];
+  const method = BackgroundService[message.action];
 
   if (method) {
     try {
