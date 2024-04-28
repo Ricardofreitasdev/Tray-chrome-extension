@@ -7,24 +7,16 @@
   </div>
 </template>
 
-<script>
-import { inject, onMounted, ref } from "vue";
+<script setup>
+import { inject, onMounted, ref } from 'vue';
 
-export default {
-  name: "AppHistory",
-  setup() {
-    const storeHistory = ref([]);
-    const chromeExtension = inject('chromeExtension');
+const storeHistory = ref([]);
+const chromeExtension = inject('chromeExtension');
 
-    onMounted(async () => {
-      const history = await chromeExtension.action('getStoreHistory');
-      storeHistory.value = history;
-    });
-    return {
-      storeHistory,
-    };
-  },
-};
+onMounted(async () => {
+  const history = await chromeExtension.action('getStoreHistory');
+  storeHistory.value = history;
+});
 </script>
 
 <style lang="scss" scoped>

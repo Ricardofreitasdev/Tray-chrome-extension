@@ -1,15 +1,17 @@
 <template>
   <div>
-    <button class="button" @click="gerarCPF">Gerar CPF</button>
+    <button class="button" @click="gerarCPF">
+      Gerar CPF
+    </button>
     <copy-area :text="cpf" />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import copyArea from "../copy-area.vue";
+import { ref } from 'vue';
+import copyArea from '../copy-area.vue';
 
-const cpf = ref("");
+const cpf = ref('');
 
 const calcularDigitoVerificador = (digits, weight) => {
   const sum = digits.reduce(
@@ -33,7 +35,7 @@ const gerarCPF = () => {
   const dv2 = calcularDigitoVerificador(cpfDigits, n + 2);
   cpfDigits.push(dv2);
 
-  cpf.value = cpfDigits.join("");
+  cpf.value = cpfDigits.join('');
 };
 </script>
 

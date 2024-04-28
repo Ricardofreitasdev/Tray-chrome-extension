@@ -23,23 +23,23 @@
 </template>
 
 <script setup>
-import { computed, inject, onMounted, reactive, ref } from "vue";
-import AppEnvironmentLink from "../components/environment-link.vue";
-import environments from "../config.js";
+import { computed, inject, onMounted, reactive, ref } from 'vue';
+import AppEnvironmentLink from '../components/environment-link.vue';
+import environments from '../config.js';
 
-const chromeExtension = inject("chromeExtension");
-const currentUrl = ref("");
+const chromeExtension = inject('chromeExtension');
+const currentUrl = ref('');
 
 const urlsEasy = reactive(environments.easy);
 const urlsCentral = reactive(environments.central);
 
 onMounted(async () => {
-  const storeData = await chromeExtension.action("getStoreData");
+  const storeData = await chromeExtension.action('getStoreData');
   currentUrl.value = storeData.currentUrl;
 });
 
-const isCentral = computed(() => currentUrl.value.includes("my-account"));
-const isEasy = computed(() => currentUrl.value.includes("checkout"));
+const isCentral = computed(() => currentUrl.value.includes('my-account'));
+const isEasy = computed(() => currentUrl.value.includes('checkout'));
 </script>
 
 <style lang="scss">

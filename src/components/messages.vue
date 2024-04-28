@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import useNotificarion from "../composables/useNotification";
+import useNotificarion from '../composables/useNotification';
 const { notification } = useNotificarion();
 </script>
 

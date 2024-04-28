@@ -1,26 +1,41 @@
-import environments from "../../config.js";
-import Actions from "../actions/Actions.js";
-import InjectScripts from "../actions/InjectScripts.js";
-import { ChromeMessages } from "../ChromeMessages.js";
+import environments from '../../config.js';
+import { Messages } from '../messages/index.js';
+import {
+  addFbDebugParam,
+  changeUrl,
+  getHistory,
+  removeExternalJsFromUrl,
+  removeLayoutByParam,
+  setHistory,
+} from '../actions/index.js';
+import {
+  getInlineScriptsWithoutNonce,
+  storeDataByHtml,
+  storeIntegrationsByHtml,
+} from '../scripts/index.js';
 
-class BackgroundService {
+export default class BackgroundService {
   async getStoreData(message, sendResponse) {
-    chrome.scripting
-      .executeScript({
-        target: { tabId: message.tabId },
-        func: InjectScripts.storeDataByHtml,
-      })
-      .then(async (result) => {
-        if (!result) return;
+    try {
+      chrome.scripting
+        .executeScript({
+          target: { tabId: message.tabId },
+          func: storeDataByHtml,
+        })
+        .then(async (result) => {
+          if (!result) return;
 
-        const response = result[0].result;
+          const response = result[0].result;
 
-        if (response.isTray) {
-          await Actions.setHistory(response);
-        }
+          if (response.isTray) {
+            await setHistory(response);
+          }
 
-        sendResponse(response);
-      });
+          sendResponse(response);
+        });
+    } catch (error) {
+      sendResponse(Messages.error('DEFAULT'));
+    }
   }
 
   async getStoreIntegrations(message, sendResponse) {
@@ -28,14 +43,14 @@ class BackgroundService {
       chrome.scripting.executeScript(
         {
           target: { tabId: message.tabId },
-          func: InjectScripts.storeIntegrationsByHtml,
+          func: storeIntegrationsByHtml,
         },
         function (result) {
           sendResponse(result[0].result);
         }
       );
     } catch (error) {
-      sendResponse(ChromeMessages.getErrorMessage("DEFAULT"));
+      sendResponse(Messages.error('DEFAULT'));
     }
   }
 
@@ -43,7 +58,7 @@ class BackgroundService {
     const { tabId, tabUrl } = message;
 
     try {
-      const { message, newUrl } = Actions.removeLayoutByParam(tabUrl);
+      const { message, newUrl } = removeLayoutByParam(tabUrl);
 
       chrome.tabs.update(tabId, { url: newUrl }, function () {
         sendResponse(message);
@@ -56,7 +71,7 @@ class BackgroundService {
   async fbDebug(message, sendResponse) {
     const { tabId, tabUrl } = message;
     try {
-      const { message, newUrl } = Actions.addFbDebugParam(tabUrl);
+      const { message, newUrl } = addFbDebugParam(tabUrl);
 
       chrome.tabs.update(tabId, { url: newUrl }, function () {
         sendResponse(message);
@@ -69,7 +84,7 @@ class BackgroundService {
   async jsOff(message, sendResponse) {
     const { tabId, tabUrl } = message;
     try {
-      const { message, newUrl } = Actions.removeExternalJsFromUrl(tabUrl);
+      const { message, newUrl } = removeExternalJsFromUrl(tabUrl);
 
       chrome.tabs.update(tabId, { url: newUrl }, function () {
         sendResponse(message);
@@ -84,20 +99,20 @@ class BackgroundService {
       chrome.scripting.executeScript(
         {
           target: { tabId: message.tabId },
-          func: InjectScripts.getInlineScriptsWithoutNonce,
+          func: getInlineScriptsWithoutNonce,
         },
         function (result) {
           sendResponse(result[0].result);
         }
       );
     } catch (error) {
-      sendResponse(ChromeMessages.getErrorMessage("DEFAULT"));
+      sendResponse(Messages.error('DEFAULT'));
     }
   }
 
   async getStoreHistory(_, sendResponse) {
     try {
-      const response = await Actions.getHistory();
+      const response = await getHistory();
       sendResponse(response);
     } catch (error) {
       sendResponse(error.message);
@@ -107,7 +122,7 @@ class BackgroundService {
   async changeEnvironment(message, sendResponse) {
     const { tabId, data } = message;
     try {
-      const { message, newUrl } = Actions.changeUrl(data, environments);
+      const { message, newUrl } = changeUrl(data, environments);
 
       chrome.tabs.update(tabId, { url: newUrl }, function () {
         sendResponse(message);
@@ -135,13 +150,11 @@ class BackgroundService {
           localStorage: true,
         },
         function () {
-          sendResponse(ChromeMessages.getSuccessMessage("STORAGE"));
+          sendResponse(Messages.success('STORAGE'));
         }
       );
     } catch (error) {
-      sendResponse(ChromeMessages.getErrorMessage("STORAGE"));
+      sendResponse(Messages.error('STORAGE'));
     }
   }
 }
-
-export default BackgroundService;

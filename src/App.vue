@@ -17,11 +17,11 @@
 </template>
 
 <script setup>
-import Tabs from "./components/tabs.vue";
-import Store from "./pages/store.vue";
-import Dev from "./pages/dev.vue";
-import Settings from "./pages/settings.vue";
-import Messages from "./components/messages.vue";
+import Tabs from './components/tabs.vue';
+import Store from './pages/store.vue';
+import Dev from './pages/dev.vue';
+import Settings from './pages/settings.vue';
+import Messages from './components/messages.vue';
 </script>
 
 <style scoped>

@@ -16,16 +16,12 @@
       <a :href="robots" target="_blank">Robots</a>
     </p>
     <p class="item">
-      <a
-        href="https://tagassistant.google.com"
-        target="_blank"
-      >Tag Assistant</a>
+      <a href="https://tagassistant.google.com" target="_blank">
+        Tag Assistant
+      </a>
     </p>
     <p class="item">
-      <a
-        href="https://developers.tray.com.br"
-        target="_blank"
-      >
+      <a href="https://developers.tray.com.br" target="_blank">
         Documentação API
       </a>
     </p>
@@ -40,49 +36,40 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted, computed, inject } from "vue";
-import { useCopy } from '../../composables/useCopy';
-export default {
-  name: "AppExternalLinks",
+<script setup>
+import { ref, onMounted, computed, inject } from 'vue';
 
-  setup() {
-    const chromeExtension = inject('chromeExtension');
+const chromeExtension = inject('chromeExtension');
 
-    const url = ref("");
-    const currentUrl = ref("");
-    const isTray = ref(false);
-    const { copy } = useCopy();
+const url = ref('');
+const currentUrl = ref('');
+const isTray = ref(false);
 
-    onMounted(async () => {
-      const storeData = await chromeExtension.action('getStoreData');
+onMounted(async () => {
+  const storeData = await chromeExtension.action('getStoreData');
 
-      url.value = storeData.url;
-      currentUrl.value = storeData.currentUrl;
-      isTray.value = storeData.isTray;
-    });
+  url.value = storeData.url;
+  currentUrl.value = storeData.currentUrl;
+  isTray.value = storeData.isTray;
+});
 
-    const pageSpeedUrl = computed(() => {
-      return `http://developers.google.com/speed/pagespeed/insights/?url=${url.value}`;
-    });
+const pageSpeedUrl = computed(() => {
+  return `http://developers.google.com/speed/pagespeed/insights/?url=${url.value}`;
+});
 
-    const searchConsole = computed(() => {
-      return `https://search.google.com/test/rich-results?url=${currentUrl.value}`;
-    });
+const searchConsole = computed(() => {
+  return `https://search.google.com/test/rich-results?url=${currentUrl.value}`;
+});
 
-    const whatsMyDns = computed(() => {
-      return `https://www.whatsmydns.net/#A/${url.value}`;
-    });
+const whatsMyDns = computed(() => {
+  return `https://www.whatsmydns.net/#A/${url.value}`;
+});
 
-    const sitemap = computed(() => {
-      return `${url.value}/sitemap.xml`;
-    });
+const sitemap = computed(() => {
+  return `${url.value}/sitemap.xml`;
+});
 
-    const robots = computed(() => {
-      return `${url.value}/robots.txt`;
-    });
-
-    return { copy, pageSpeedUrl, searchConsole, whatsMyDns, sitemap, robots, isTray };
-  },
-};
+const robots = computed(() => {
+  return `${url.value}/robots.txt`;
+});
 </script>

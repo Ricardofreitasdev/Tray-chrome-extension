@@ -1,5 +1,5 @@
-import { ChromeMessages } from "./ChromeMessages.js";
-import BackgroundService from "./service/BackgroundService.js";
+import { Messages } from './messages/index.js';
+import BackgroundService from './service/index.js';
 const backgroundService = new BackgroundService();
 
 const listener = (message, sender, sendResponse) => {
@@ -9,7 +9,7 @@ const listener = (message, sender, sendResponse) => {
     try {
       method(message, sendResponse, sender);
     } catch (error) {
-      sendResponse(ChromeMessages.getErrorMessage("DEFAULT"));
+      sendResponse(Messages.error('DEFAULT'));
     }
   }
 

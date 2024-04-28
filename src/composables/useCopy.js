@@ -1,7 +1,6 @@
-import useNotification from "./useNotification.js";
+import useNotification from './useNotification.js';
 
 export function useCopy() {
-  
   const { setNotification } = useNotification();
 
   const copy = (text) => {

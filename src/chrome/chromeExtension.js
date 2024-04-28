@@ -20,7 +20,7 @@ export default class ChromeExtension {
     });
   }
 
-  async action(actionName, data = {}) {
-    return await this.sendChromeMessage(actionName, data);
+  async action(action, data = {}) {
+    return await this.sendChromeMessage(action, data);
   }
 }

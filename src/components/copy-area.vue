@@ -11,14 +11,14 @@
       v-show="showCopyIcon && !showCheckIcon"
       class="fa-regular fa-copy"
       @click="copyText"
-    ></i>
-    <i v-show="showCheckIcon" class="fa-solid fa-check"></i>
+    />
+    <i v-show="showCheckIcon" class="fa-solid fa-check" />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useCopy } from "../composables/useCopy";
+import { ref } from 'vue';
+import { useCopy } from '../composables/useCopy';
 
 const props = defineProps({
   text: {
