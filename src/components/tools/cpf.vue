@@ -5,47 +5,35 @@
   </div>
 </template>
 
-<script>
-import copyArea from '../copy-area.vue';
-export default {
-  name: "AppBuildCpf",
-  components: { copyArea },
+<script setup>
+import { ref } from "vue";
+import copyArea from "../copy-area.vue";
 
-  data() {
-    return {
-      cpf: "",
-    };
-  },
+const cpf = ref("");
 
-  methods: {
-    gerarCPF() {
-      const n = 9;
-      const cpfDigits = Array.from({ length: n }, () =>
-        Math.floor(Math.random() * 10)
-      );
+const calcularDigitoVerificador = (digits, weight) => {
+  const sum = digits.reduce(
+    (acc, digit, index) => acc + digit * (weight - index),
+    0
+  );
+  const mod = sum % 11;
+  const dv = mod < 2 ? 0 : 11 - mod;
+  return dv;
+};
 
-      const dv1 = this.calcularDigitoVerificador(cpfDigits, n + 1);
-      cpfDigits.push(dv1);
+const gerarCPF = () => {
+  const n = 9;
+  const cpfDigits = Array.from({ length: n }, () =>
+    Math.floor(Math.random() * 10)
+  );
 
-      const dv2 = this.calcularDigitoVerificador(cpfDigits, n + 2);
-      cpfDigits.push(dv2);
+  const dv1 = calcularDigitoVerificador(cpfDigits, n + 1);
+  cpfDigits.push(dv1);
 
-      const cpf = cpfDigits.join("");
+  const dv2 = calcularDigitoVerificador(cpfDigits, n + 2);
+  cpfDigits.push(dv2);
 
-      this.cpf = cpf;
-    },
-
-    calcularDigitoVerificador(digits, weight) {
-      const sum = digits.reduce(
-        (acc, digit, index) => acc + digit * (weight - index),
-        0
-      );
-      const mod = sum % 11;
-      const dv = mod < 2 ? 0 : 11 - mod;
-
-      return dv;
-    },
-  }
+  cpf.value = cpfDigits.join("");
 };
 </script>
 
@@ -63,10 +51,12 @@ export default {
     background: #383d44;
   }
 }
+
 code {
   padding: 2px;
   border-radius: 2px;
 }
+
 i {
   margin-left: 15px;
 }

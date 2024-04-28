@@ -22,40 +22,24 @@
   <div v-else>Não existem recursos de dev nessa pagina</div>
 </template>
 
-<script>
+<script setup>
 import { computed, inject, onMounted, reactive, ref } from "vue";
 import AppEnvironmentLink from "../components/environment-link.vue";
 import environments from "../config.js";
 
-export default {
-  name: "Dev",
-  components: {
-    AppEnvironmentLink,
-  },
+const chromeExtension = inject("chromeExtension");
+const currentUrl = ref("");
 
-  setup() {
-    const chromeExtension = inject('chromeExtension');
-    const currentUrl = ref("");
+const urlsEasy = reactive(environments.easy);
+const urlsCentral = reactive(environments.central);
 
-    const urlsEasy = reactive(environments.easy);
-    const urlsCentral = reactive(environments.central);
+onMounted(async () => {
+  const storeData = await chromeExtension.action("getStoreData");
+  currentUrl.value = storeData.currentUrl;
+});
 
-    onMounted(async () => {
-      const storeData = await chromeExtension.getStoreData();
-      currentUrl.value = storeData.currentUrl;
-    });
-
-    const isCentral = computed(() => currentUrl.value.includes("my-account"));
-    const isEasy = computed(() => currentUrl.value.includes("checkout"));
-
-    return {
-      urlsEasy,
-      urlsCentral,
-      isCentral,
-      isEasy,
-    };
-  },
-};
+const isCentral = computed(() => currentUrl.value.includes("my-account"));
+const isEasy = computed(() => currentUrl.value.includes("checkout"));
 </script>
 
 <style lang="scss">

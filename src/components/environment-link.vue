@@ -30,12 +30,12 @@ export default {
     const { setNotification } = useNotification();
 
     onMounted(async () => {
-      const storeData = await chromeExtension.getStoreData();
+      const storeData = await chromeExtension.action('getStoreData');
       currentUrl.value = storeData.currentUrl;
     });
 
     const changeUrl = async (env) => {
-      const response = await chromeExtension.changeEnvironment({
+      const response = await chromeExtension.action('changeEnvironment', {
         currentUrl: currentUrl.value,
         environment: env,
       });

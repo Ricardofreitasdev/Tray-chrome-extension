@@ -5,26 +5,22 @@ import { ChromeMessages } from "../ChromeMessages.js";
 
 class BackgroundService {
   async getStoreData(message, sendResponse) {
-    try {
-      chrome.scripting
-        .executeScript({
-          target: { tabId: message.tabId },
-          func: InjectScripts.storeDataByHtml,
-        })
-        .then(async (result) => {
-          if (!result) return;
+    chrome.scripting
+      .executeScript({
+        target: { tabId: message.tabId },
+        func: InjectScripts.storeDataByHtml,
+      })
+      .then(async (result) => {
+        if (!result) return;
 
-          const response = result[0].result;
+        const response = result[0].result;
 
-          if (response.isTray) {
-            await Actions.setHistory(response);
-          }
+        if (response.isTray) {
+          await Actions.setHistory(response);
+        }
 
-          sendResponse(response);
-        });
-    } catch (error) {
-      sendResponse(ChromeMessages.getErrorMessage("DEFAULT"));
-    }
+        sendResponse(response);
+      });
   }
 
   async getStoreIntegrations(message, sendResponse) {

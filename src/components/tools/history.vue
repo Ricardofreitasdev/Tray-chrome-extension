@@ -17,7 +17,7 @@ export default {
     const chromeExtension = inject('chromeExtension');
 
     onMounted(async () => {
-      const history = await chromeExtension.getStoreHistory();
+      const history = await chromeExtension.action('getStoreHistory');
       storeHistory.value = history;
     });
     return {

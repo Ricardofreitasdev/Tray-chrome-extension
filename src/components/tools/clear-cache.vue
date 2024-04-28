@@ -15,7 +15,7 @@ export default {
     const { setNotification } = useNotification();
 
     const clear = async () => {
-      const response = await chromeExtension.clearCache();
+      const response = await chromeExtension.action('clearCache');
       setNotification(response);
     };
     return {

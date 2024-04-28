@@ -1,6 +1,10 @@
 {
-  "name": "extension-vue",
+  "name": "tray-chrome-extension",
   "private": true,
+  "author": {
+    "name": "Ricardo Freitas",
+    "email": "ricardo.freitas@tray.net.br"
+  },
   "version": "1.0.0",
   "type": "module",
   "engines": {

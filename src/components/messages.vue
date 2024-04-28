@@ -4,18 +4,9 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import useNotificarion from "../composables/useNotification";
-
-export default {
-  name: "AppMessages",
-  setup() {
-    const { notification } = useNotificarion();
-    return {
-      notification,
-    };
-  },
-};
+const { notification } = useNotificarion();
 </script>
 
 <style lang="scss">

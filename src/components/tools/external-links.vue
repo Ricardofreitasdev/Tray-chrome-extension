@@ -55,7 +55,7 @@ export default {
     const { copy } = useCopy();
 
     onMounted(async () => {
-      const storeData = await chromeExtension.getStoreData();
+      const storeData = await chromeExtension.action('getStoreData');
 
       url.value = storeData.url;
       currentUrl.value = storeData.currentUrl;
