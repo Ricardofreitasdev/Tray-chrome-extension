@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isEasy">
+  <div v-if="$store.isEasy">
     <h3>EasyCheckout Ambientes</h3>
     <hr />
     <app-environment-link
@@ -9,7 +9,7 @@
       :text="easy.text"
     />
   </div>
-  <div v-else-if="isCentral">
+  <div v-else-if="$store.isCentral">
     <h3>Central Ambientes</h3>
     <hr />
     <app-environment-link
@@ -23,18 +23,15 @@
 </template>
 
 <script setup>
-import { computed, reactive } from 'vue';
+import { reactive } from 'vue';
 import AppEnvironmentLink from '../components/environment-link.vue';
 import environments from '../config.js';
-import useStoreData from '../composables/useStoreData.js';
+import { useStoreDataStore } from '../store/storeDataStore.js';
 
 const urlsEasy = reactive(environments.easy);
 const urlsCentral = reactive(environments.central);
 
-const { currentUrl } = useStoreData();
-
-const isCentral = computed(() => currentUrl.value.includes('my-account'));
-const isEasy = computed(() => currentUrl.value.includes('checkout'));
+const $store = useStoreDataStore();
 </script>
 
 <style lang="scss">

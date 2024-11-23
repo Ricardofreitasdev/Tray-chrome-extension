@@ -4,12 +4,10 @@ import BackgroundService from './service/index.js';
 const listener = (message, sender, sendResponse) => {
   const method = BackgroundService[message.action];
 
-  if (method) {
-    try {
-      method(message, sendResponse, sender);
-    } catch (error) {
-      sendResponse(Messages.error('DEFAULT'));
-    }
+  try {
+    method(message, sendResponse, sender);
+  } catch (error) {
+    sendResponse(Messages.error('DEFAULT'));
   }
 
   return true;

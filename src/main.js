@@ -1,6 +1,11 @@
 import { createApp } from 'vue';
-import './styles/global.scss';
-import App from './App.vue';
-import ChromeExtension from './chrome/chromeExtension.js';
+import { createPinia } from 'pinia';
 
-createApp(App).provide('chromeExtension', ChromeExtension).mount('#app');
+import App from './App.vue';
+
+import './styles/global.scss';
+
+const pinia = createPinia();
+const app = createApp(App);
+
+app.use(pinia).mount('#app');

@@ -1,64 +1,51 @@
 <template>
-  <div v-if="isTray">
-    <p class="item">
-      <a :href="whatsMyDns" target="_blank">Whats My Dns</a>
-    </p>
-    <p class="item">
-      <a :href="pageSpeedUrl" target="_blank">Pagespeed</a>
-    </p>
-    <p class="item">
-      <a :href="searchConsole" target="_blank">Search Console</a>
-    </p>
-    <p class="item">
-      <a :href="sitemap" target="_blank">Sitemap</a>
-    </p>
-    <p class="item">
-      <a :href="robots" target="_blank">Robots</a>
-    </p>
-    <p class="item">
-      <a href="https://tagassistant.google.com" target="_blank">
-        Tag Assistant
-      </a>
-    </p>
-    <p class="item">
-      <a href="https://developers.tray.com.br" target="_blank">
-        Documentação API
-      </a>
-    </p>
-    <p class="item">
-      <a
-        href="https://partners.tray.com.br/v/themes/comece-por-aqui/temas-tray"
-        target="_blank"
-      >
-        Documentação Temas
-      </a>
+  <div v-if="$store.isTray">
+    <p v-for="link in externalLinks" :key="link.label" class="item">
+      <a :href="link.url" target="_blank">{{ link.label }}</a>
     </p>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import useStoreData from '../../composables/useStoreData';
+import { useStoreDataStore } from '../../store/storeDataStore';
 
-const { currentUrl, isTray, url } = useStoreData();
+const $store = useStoreDataStore();
 
-const pageSpeedUrl = computed(() => {
-  return `http://developers.google.com/speed/pagespeed/insights/?url=${url.value}`;
-});
-
-const searchConsole = computed(() => {
-  return `https://search.google.com/test/rich-results?url=${currentUrl.value}`;
-});
-
-const whatsMyDns = computed(() => {
-  return `https://www.whatsmydns.net/#A/${url.value}`;
-});
-
-const sitemap = computed(() => {
-  return `${url.value}/sitemap.xml`;
-});
-
-const robots = computed(() => {
-  return `${url.value}/robots.txt`;
+const externalLinks = computed(() => {
+  return [
+    {
+      label: 'Whats My Dns',
+      url: `https://www.whatsmydns.net/#A/${$store.store.url}`,
+    },
+    {
+      label: 'Pagespeed',
+      url: `http://developers.google.com/speed/pagespeed/insights/?url=${$store.store.url}`,
+    },
+    {
+      label: 'Search Console',
+      url: `https://search.google.com/test/rich-results?url=${$store.store.currentUrl}`,
+    },
+    {
+      label: 'Sitemap',
+      url: `${$store.store.url}/sitemap.xml`,
+    },
+    {
+      label: 'Robots',
+      url: `${$store.store.url}/robots.txt`,
+    },
+    {
+      label: 'Tag Assistant',
+      url: 'https://tagassistant.google.com',
+    },
+    {
+      label: 'Documentação API',
+      url: 'https://developers.tray.com.br',
+    },
+    {
+      label: 'Documentação Temas',
+      url: 'https://partners.tray.com.br/v/themes/comece-por-aqui/temas-tray',
+    },
+  ];
 });
 </script>
