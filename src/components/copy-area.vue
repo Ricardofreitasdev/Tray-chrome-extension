@@ -18,7 +18,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useCopy } from '../composables/useCopy';
+import useCopy from '../composables/useCopy';
 
 const props = defineProps({
   text: {

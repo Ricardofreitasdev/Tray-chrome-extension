@@ -1,13 +1,13 @@
 <template>
   <p class="item">
-    <a @click="changeUrl(props.environment)">{{ props.text }}</a>
+    <a @click="changeUrl(props.environment, $store.store)">{{ props.text }}</a>
   </p>
 </template>
 
 <script setup>
-import { inject } from 'vue';
-import useNotification from '../composables/useNotification';
-import useStoreData from '../composables/useStoreData';
+import { useStoreDataStore } from '../store/storeDataStore';
+import useBrowserAction from '../composables/useBrowserAction';
+
 const props = defineProps({
   environment: {
     type: String,
@@ -19,17 +19,6 @@ const props = defineProps({
   },
 });
 
-const chromeExtension = inject('chromeExtension');
-const { setNotification } = useNotification();
-
-const { currentUrl } = useStoreData();
-
-const changeUrl = async (env) => {
-  const response = await chromeExtension.action('changeEnvironment', {
-    currentUrl: currentUrl.value,
-    environment: env,
-  });
-
-  setNotification(response);
-};
+const $store = useStoreDataStore();
+const { changeUrl } = useBrowserAction();
 </script>

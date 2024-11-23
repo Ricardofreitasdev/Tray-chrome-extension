@@ -12,16 +12,32 @@
       </template>
     </Tabs>
     <Messages />
-    <footer class="footer-message">version 1.0.0</footer>
+    <footer class="footer-message">version {{ version }}</footer>
   </div>
 </template>
 
 <script setup>
+import { ref, onBeforeMount } from 'vue';
+
 import Tabs from './components/tabs.vue';
 import Store from './pages/store.vue';
 import Dev from './pages/dev.vue';
 import Settings from './pages/settings.vue';
 import Messages from './components/messages.vue';
+import packageJson from '../package.json';
+import { useStoreDataStore } from './store/storeDataStore';
+import useBrowserAction from './composables/useBrowserAction';
+
+const version = ref(packageJson.version);
+const $store = useStoreDataStore();
+const { getStoreData, getStoreIntegrations, getStoreHistory } =
+  useBrowserAction();
+
+onBeforeMount(async () => {
+  $store.setStoreData(await getStoreData());
+  $store.setIntegrations(await getStoreIntegrations());
+  $store.setStoreHistory(await getStoreHistory());
+});
 </script>
 
 <style scoped>
