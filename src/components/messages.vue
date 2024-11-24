@@ -1,12 +1,14 @@
 <template>
-  <div v-if="notification" class="messages">
-    <span>{{ notification }}</span>
+  <div v-if="$toast.hasNotifications" class="messages">
+    <span v-for="notification in $toast.notifications" :key="notification.id">{{
+      notification.message
+    }}</span>
   </div>
 </template>
 
 <script setup>
-import useNotificarion from '../composables/useNotification';
-const { notification } = useNotificarion();
+import { useToastStore } from '../store/toastStore';
+const $toast = useToastStore();
 </script>
 
 <style lang="scss">
@@ -25,6 +27,7 @@ const { notification } = useNotificarion();
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 
   span {
     color: $text-color-2;

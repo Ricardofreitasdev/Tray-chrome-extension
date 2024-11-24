@@ -1,14 +1,14 @@
-import useNotification from './useNotification.js';
+import { useToastStore } from '../store/toastStore.js';
 
 export default function useCopy() {
-  const { setNotification } = useNotification();
+  const $toast = useToastStore();
 
   const copy = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      setNotification(`${text} copiado para a área de transferência.`);
+      $toast.push(`${text} copiado para a área de transferência.`);
     } catch (error) {
-      setNotification(`Erro ao copiar ${text}: ${error}`);
+      $toast.push(`Erro ao copiar ${text}: ${error}`);
     }
   };
 
