@@ -1,38 +1,52 @@
 import { ref, watch } from 'vue';
-import useNotification from './useNotification';
-import chromeExtension from '../chrome/chromeExtension';
+import { useToastStore } from '../store/toastStore';
+
+const browser = {
+  getCurrentTab: async () => {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    return tab;
+  },
+
+  sendMessage: async (action, data) => {
+    const { id: tabId, url: tabUrl } = await browser.getCurrentTab();
+    return await chrome.runtime.sendMessage({ tabId, tabUrl, action, data });
+  },
+};
 
 export default function useBrowserAction() {
-  const { setNotification } = useNotification();
+  const $toast = useToastStore();
   const message = ref('');
 
   const actions = {
     removeTheme: async () => {
-      message.value = await chromeExtension.action('layoutOff');
+      message.value = await browser.sendMessage('layoutOff');
     },
 
     removeExternalScripts: async () => {
-      message.value = await chromeExtension.action('jsOff');
+      message.value = await browser.sendMessage('jsOff');
     },
 
     facebookConversions: async () => {
-      message.value = await chromeExtension.action('fbDebug');
+      message.value = await browser.sendMessage('fbDebug');
     },
 
     changeUrl: async (env, { currentUrl }) => {
-      message.value = await chromeExtension.action('changeEnvironment', {
+      message.value = await browser.sendMessage('changeEnvironment', {
         currentUrl: currentUrl,
         environment: env,
       });
     },
 
     clear: async () => {
-      message.value = await chromeExtension.action('clearCache');
+      message.value = await browser.sendMessage('clearCache');
     },
 
     verifyInlineScript: async ({ hasCSP, id }) => {
       const { inlineScripts, totalBlockedScripts } =
-        await chromeExtension.action('getInlineScripts');
+        await browser.sendMessage('getInlineScripts');
 
       if (!hasCSP) {
         message.value = `A loja ${id} não esta com CSP ativo`;
@@ -73,18 +87,17 @@ export default function useBrowserAction() {
   };
 
   const getters = {
-    getStoreData: async () => await chromeExtension.action('getStoreData'),
+    getStoreData: async () => await browser.sendMessage('getStoreData'),
 
     getStoreIntegrations: async () =>
-      await chromeExtension.action('getStoreIntegrations'),
+      await browser.sendMessage('getStoreIntegrations'),
 
-    getStoreHistory: async () =>
-      await chromeExtension.action('getStoreHistory'),
+    getStoreHistory: async () => await browser.sendMessage('getStoreHistory'),
   };
 
   watch(message, (newMessage) => {
     if (newMessage !== '') {
-      setNotification(newMessage);
+      $toast.push(newMessage);
     }
 
     setTimeout(() => {
