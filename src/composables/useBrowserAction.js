@@ -1,4 +1,3 @@
-import { ref, watch } from 'vue';
 import { useToastStore } from '../store/toastStore';
 
 const browser = {
@@ -18,30 +17,34 @@ const browser = {
 
 export default function useBrowserAction() {
   const $toast = useToastStore();
-  const message = ref('');
 
   const actions = {
     removeTheme: async () => {
-      message.value = await browser.sendMessage('layoutOff');
+      const response = await browser.sendMessage('layoutOff');
+      $toast.push(response);
     },
 
     removeExternalScripts: async () => {
-      message.value = await browser.sendMessage('jsOff');
+      const response = await browser.sendMessage('jsOff');
+      $toast.push(response);
     },
 
     facebookConversions: async () => {
-      message.value = await browser.sendMessage('fbDebug');
+      const response = await browser.sendMessage('fbDebug');
+      $toast.push(response);
     },
 
     changeUrl: async (env, { currentUrl }) => {
-      message.value = await browser.sendMessage('changeEnvironment', {
+      const response = await browser.sendMessage('changeEnvironment', {
         currentUrl: currentUrl,
         environment: env,
       });
+      $toast.push(response);
     },
 
     clear: async () => {
-      message.value = await browser.sendMessage('clearCache');
+      const response = await browser.sendMessage('clearCache');
+      $toast.push(response);
     },
 
     verifyInlineScript: async ({ hasCSP, id }) => {
@@ -49,19 +52,19 @@ export default function useBrowserAction() {
         await browser.sendMessage('getInlineScripts');
 
       if (!hasCSP) {
-        message.value = `A loja ${id} não esta com CSP ativo`;
+        $toast.push(`A loja ${id} não esta com CSP ativo`);
         return;
       }
 
       if (totalBlockedScripts > 0) {
         actions.createCSPReport(inlineScripts, totalBlockedScripts, id);
 
-        message.value = `Acesse os seus downloads para verificar os scripts
-            bloqueado na loja ${id}`;
+        $toast.push(`Acesse os seus downloads para verificar os scripts
+            bloqueado na loja ${id}`);
         return;
       }
 
-      message.value = `A loja ${id} não tem scripts inlines`;
+      $toast.push(`A loja ${id} não tem scripts inlines`);
     },
 
     createCSPReport: (data, total, id) => {
@@ -94,16 +97,6 @@ export default function useBrowserAction() {
 
     getStoreHistory: async () => await browser.sendMessage('getStoreHistory'),
   };
-
-  watch(message, (newMessage) => {
-    if (newMessage !== '') {
-      $toast.push(newMessage);
-    }
-
-    setTimeout(() => {
-      message.value = '';
-    }, 100);
-  });
 
   return {
     ...actions,
