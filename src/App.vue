@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref, onMounted } from 'vue';
 
 import Tabs from './components/tabs.vue';
 import Store from './pages/store.vue';
@@ -33,7 +33,7 @@ const $store = useStoreDataStore();
 const { getStoreData, getStoreIntegrations, getStoreHistory } =
   useBrowserAction();
 
-onBeforeMount(async () => {
+onMounted(async () => {
   $store.setStoreData(await getStoreData());
   $store.setIntegrations(await getStoreIntegrations());
   $store.setStoreHistory(await getStoreHistory());

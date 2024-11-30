@@ -1,4 +1,4 @@
-export class Messages {
+export default class Messages {
   static SUCCESS_MESSAGES = {
     THEME_REMOVED: 'Tema removido com sucesso!',
     JS_REMOVED: 'Javascript externo removido com sucesso!',
