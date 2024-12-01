@@ -27,6 +27,7 @@ import Messages from './components/messages.vue';
 import packageJson from '../package.json';
 import { useStoreDataStore } from './store/storeDataStore';
 import useBrowserAction from './composables/useBrowserAction';
+import configs from './config';
 
 const version = ref(packageJson.version);
 const $store = useStoreDataStore();
@@ -34,6 +35,7 @@ const { getStoreData, getStoreIntegrations, getStoreHistory } =
   useBrowserAction();
 
 onMounted(async () => {
+  $store.setConfigs(configs);
   $store.setStoreData(await getStoreData());
   $store.setIntegrations(await getStoreIntegrations());
   $store.setStoreHistory(await getStoreHistory());
@@ -44,9 +46,8 @@ onMounted(async () => {
 .board {
   background: #0d1117;
   max-width: 300px;
-  max-height: 425px;
   width: 400px;
-  height: 425px;
+  height: 480px;
   overflow-y: hidden;
   padding: 16px;
   position: relative;

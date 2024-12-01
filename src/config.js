@@ -1,2 +1,6 @@
-const environments = {};
-export default environments;
+const configs = {
+  //   easy: [],
+  //   central: [],
+  //   dashboard: {},
+};
+export default configs;

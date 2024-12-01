@@ -34,6 +34,11 @@ export default function useBrowserAction() {
       $toast.push(response);
     },
 
+    goToDashboard: async () => {
+      const response = await browser.sendMessage('goToDashboard');
+      $toast.push(response);
+    },
+
     changeUrl: async (env, { currentUrl }) => {
       const response = await browser.sendMessage('changeEnvironment', {
         currentUrl: currentUrl,

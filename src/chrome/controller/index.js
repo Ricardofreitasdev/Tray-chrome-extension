@@ -46,6 +46,32 @@ const ActionsController = {
     return message;
   },
 
+  async goToDashboard({ tabId }) {
+    const configs = Actions.getConfig();
+
+    await chrome.tabs.update(tabId, {
+      url: configs?.dashboard?.url,
+    });
+
+    await new Promise((resolve) => {
+      chrome.tabs.onUpdated.addListener(
+        function listener(tabIdUpdated, changeInfo) {
+          if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
+            chrome.tabs.onUpdated.removeListener(listener);
+            resolve();
+          }
+        }
+      );
+    });
+
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      func: Scripts.goToDashboard,
+    });
+
+    return Messages;
+  },
+
   async jsOff({ tabId, tabUrl }) {
     const { message, newUrl } = Actions.removeExternalJsFromUrl(tabUrl);
     chrome.tabs.update(tabId, { url: newUrl });
@@ -80,6 +106,19 @@ const ActionsController = {
       }
     );
     return Messages.success('STORAGE');
+  },
+
+  async awaitToUpdate(tabId) {
+    await new Promise((resolve) => {
+      chrome.tabs.onUpdated.addListener(
+        function listener(tabIdUpdated, changeInfo) {
+          if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
+            chrome.tabs.onUpdated.removeListener(listener);
+            resolve();
+          }
+        }
+      );
+    });
   },
 };
 

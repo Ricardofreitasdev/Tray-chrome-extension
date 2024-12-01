@@ -8,6 +8,9 @@
         </p>
       </div>
       <hr />
+      <p v-if="$store.hasDashboardConfig" class="item">
+        <a @click="goToDashboard">Acessar Painel da Loja</a>
+      </p>
       <p class="item">
         <a @click="facebookConversions">Ativar Debug do Facebook</a>
       </p>
@@ -43,11 +46,13 @@ const {
   removeExternalScripts,
   facebookConversions,
   verifyInlineScript,
+  goToDashboard,
 } = useBrowserAction();
 
 const store = computed(() => ({
   id: { value: $store.store.id, label: 'Loja' },
   session: { value: $store.store.session, label: 'Sessão' },
+  server: { value: $store.store.server, label: 'Server' },
   gtm: { value: $store.integrations.gtm, label: 'Gtm' },
   ga4: { value: $store.integrations.analyticsGa4, label: 'Ga4' },
   ua: { value: $store.integrations.analyticsUa, label: 'UA' },

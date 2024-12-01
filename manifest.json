@@ -16,5 +16,12 @@
     }
   },
   "host_permissions": ["<all_urls>"],
-  "permissions": ["tabs", "activeTab", "scripting", "storage", "browsingData"]
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting",
+    "storage",
+    "browsingData",
+    "sidePanel"
+  ]
 }
