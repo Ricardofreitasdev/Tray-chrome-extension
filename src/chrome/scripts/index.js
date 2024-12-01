@@ -23,6 +23,34 @@ const Scripts = {
       'meta[http-equiv="Content-Security-Policy"]'
     );
 
+    let server = '';
+    const storeElement = document.querySelector(
+      '[data-tray-tst="page_load_info"]'
+    );
+
+    const checkoutElement = document.getElementById('pageview-script');
+
+    if (storeElement) {
+      const text = storeElement.textContent || storeElement.innerText;
+
+      const nodeRegex = /node:\s*(.*)/;
+      const match = text.match(nodeRegex);
+
+      if (match && match[1]) {
+        server = match[1];
+      }
+    }
+
+    if (checkoutElement) {
+      const scriptSrc = checkoutElement.src;
+
+      const regex = /checkout\/([^/]+)\/dist/;
+      const match = scriptSrc.match(regex);
+      if (match && match[1]) {
+        server = match[1];
+      }
+    }
+
     const store = {
       id: id,
       session: session,
@@ -31,6 +59,7 @@ const Scripts = {
       currentUrl: window.location.href,
       isTray: isTray || isPageviewScriptPresent,
       hasCSP: hasCSP,
+      server: server,
     };
 
     return store;
@@ -91,6 +120,10 @@ const Scripts = {
     });
     const totalBlockedScripts = inlineScripts.length;
     return { inlineScripts, totalBlockedScripts };
+  },
+
+  goToDashboard: function () {
+    console.log('goToDashboardScript');
   },
 };
 

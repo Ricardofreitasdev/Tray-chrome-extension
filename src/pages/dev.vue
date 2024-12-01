@@ -3,7 +3,7 @@
     <h3>EasyCheckout Ambientes</h3>
     <hr />
     <app-environment-link
-      v-for="easy in urlsEasy"
+      v-for="easy in $store.urlsEasy"
       :key="easy.environment"
       :environment="easy.environment"
       :text="easy.text"
@@ -13,7 +13,7 @@
     <h3>Central Ambientes</h3>
     <hr />
     <app-environment-link
-      v-for="central in urlsCentral"
+      v-for="central in $store.urlsCentral"
       :key="central.environment"
       :environment="central.environment"
       :text="central.text"
@@ -23,13 +23,8 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
 import AppEnvironmentLink from '../components/environment-link.vue';
-import environments from '../config.js';
 import { useStoreDataStore } from '../store/storeDataStore.js';
-
-const urlsEasy = reactive(environments.easy);
-const urlsCentral = reactive(environments.central);
 
 const $store = useStoreDataStore();
 </script>
