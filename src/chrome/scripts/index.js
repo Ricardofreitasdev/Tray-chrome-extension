@@ -123,7 +123,9 @@ const Scripts = {
   },
 
   goToDashboard: function () {
-    console.log('goToDashboardScript');
+    console.log('logando...');
+    document.querySelector('#motivo').value = 'Analisar a loja';
+    document.querySelector('.button-google .container a').click();
   },
 };
 

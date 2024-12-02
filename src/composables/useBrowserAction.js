@@ -34,8 +34,8 @@ export default function useBrowserAction() {
       $toast.push(response);
     },
 
-    goToDashboard: async () => {
-      const response = await browser.sendMessage('goToDashboard');
+    goToDashboard: async ({ id }) => {
+      const response = await browser.sendMessage('goToDashboard', { id });
       $toast.push(response);
     },
 
