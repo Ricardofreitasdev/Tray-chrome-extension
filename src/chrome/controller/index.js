@@ -46,11 +46,11 @@ const ActionsController = {
     return message;
   },
 
-  async goToDashboard({ tabId }) {
+  async goToDashboard({ tabId, data }) {
     const configs = Actions.getConfig();
 
     await chrome.tabs.update(tabId, {
-      url: configs?.dashboard?.url,
+      url: configs?.dashboard?.url + data.id + '|935',
     });
 
     await new Promise((resolve) => {

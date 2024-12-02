@@ -9,7 +9,7 @@
       </div>
       <hr />
       <p v-if="$store.hasDashboardConfig" class="item">
-        <a @click="goToDashboard">Acessar Painel da Loja</a>
+        <a @click="goToDashboard($store.store)">Acessar Painel da Loja</a>
       </p>
       <p class="item">
         <a @click="facebookConversions">Ativar Debug do Facebook</a>
