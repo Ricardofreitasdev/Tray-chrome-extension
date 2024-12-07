@@ -50,7 +50,27 @@ const ActionsController = {
     const configs = Actions.getConfig();
 
     await chrome.tabs.update(tabId, {
-      url: configs?.dashboard?.url + data.id + '|935',
+      url: configs?.dashboard?.userId,
+    });
+
+    await new Promise((resolve) => {
+      chrome.tabs.onUpdated.addListener(
+        function listener(tabIdUpdated, changeInfo) {
+          if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
+            chrome.tabs.onUpdated.removeListener(listener);
+            resolve();
+          }
+        }
+      );
+    });
+
+    const [{ result }] = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: Scripts.getUserId,
+    });
+
+    await chrome.tabs.update(tabId, {
+      url: configs?.dashboard?.url + data.id + '|' + result,
     });
 
     await new Promise((resolve) => {

@@ -123,9 +123,22 @@ const Scripts = {
   },
 
   goToDashboard: function () {
-    console.log('logando...');
     document.querySelector('#motivo').value = 'Analisar a loja';
-    document.querySelector('.button-google .container a').click();
+    document.querySelector('.bottom-google .container a').click();
+  },
+
+  getUserId: function () {
+    const linkList = document.querySelectorAll('a');
+    const url = Array.from(linkList).find((link) =>
+      link.href.includes('analistas_editar.php')
+    )?.href;
+
+    if (!url) {
+      return '';
+    }
+
+    const params = new URLSearchParams(url?.split('?')[1]);
+    return params.get('id_aten');
   },
 };
 
