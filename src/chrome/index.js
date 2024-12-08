@@ -1,6 +1,8 @@
+import ActionsController from './controller/actionsController.js';
+import MenuController from './controller/menuController.js';
+import Helpers from './helpers/index.js';
 import Messages from './messages/index.js';
-import ActionsController from './controller/index.js';
-import MenuController from './menu/index.js';
+import Scripts from './scripts/index.js';
 
 const browserController = (message) => {
   const action = ActionsController[message.action];
@@ -10,6 +12,16 @@ const browserController = (message) => {
   }
 
   return action(message);
+};
+
+const menuController = async (info, tab) => {
+  const action = MenuController[info.menuItemId];
+
+  if (typeof action !== 'function') {
+    throw new Error(`Ação inválida: "${info.action}"`);
+  }
+
+  return action(info, tab);
 };
 
 const messageListener = (message, _, sendResponse) => {
@@ -22,45 +34,45 @@ const messageListener = (message, _, sendResponse) => {
   return true;
 };
 
-chrome.runtime.onMessage.addListener(messageListener);
+const menuListener = async (info, tab) => {
+  menuController(info, tab)
+    .then(() => {})
+    .catch(async (error) => {
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: Scripts.injectMessageInScreen,
+        args: [error.message],
+      });
+    });
 
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: 'opcoes',
-    title: 'Tray Chrome Extension',
-    contexts: ['selection'],
-  });
-
-  chrome.contextMenus.create({
-    id: 'openSecureDomain',
-    title: 'Abrir a loja com domínio seguro',
-    parentId: 'opcoes',
-    contexts: ['selection'],
-  });
-
-  chrome.contextMenus.create({
-    id: 'openCommerceSuite',
-    title: 'Abrir a loja com commercesuite',
-    parentId: 'opcoes',
-    contexts: ['selection'],
-  });
-
-  chrome.contextMenus.create({
-    id: 'openDashboard',
-    title: 'Abrir o painel da loja',
-    parentId: 'opcoes',
-    contexts: ['selection'],
-  });
-});
-
-const menuController = (info, tab) => {
-  const action = MenuController[info.menuItemId];
-
-  if (typeof action !== 'function') {
-    throw new Error(`Ação inválida: "${info.action}"`);
-  }
-
-  return action(info, tab);
+  return true;
 };
 
-chrome.contextMenus.onClicked.addListener(menuController);
+const contextMenus = {
+  create() {
+    chrome.contextMenus.create({
+      id: 'openSecureDomain',
+      title: 'Abrir domínio seguro',
+      contexts: ['selection'],
+    });
+
+    chrome.contextMenus.create({
+      id: 'openCommerceSuite',
+      title: 'Abrir CommerceSuite',
+      contexts: ['selection'],
+    });
+
+    const configs = Helpers.getConfigs();
+    if (configs?.dashboard?.userId) {
+      chrome.contextMenus.create({
+        id: 'openDashboard',
+        title: 'Abrir Dashboard',
+        contexts: ['selection'],
+      });
+    }
+  },
+};
+
+chrome.runtime.onInstalled.addListener(contextMenus.create());
+chrome.contextMenus.onClicked.addListener(menuListener);
+chrome.runtime.onMessage.addListener(messageListener);
