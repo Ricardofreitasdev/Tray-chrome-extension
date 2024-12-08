@@ -123,9 +123,54 @@ const Scripts = {
   },
 
   goToDashboard: function () {
-    console.log('logando...');
     document.querySelector('#motivo').value = 'Analisar a loja';
-    document.querySelector('.button-google .container a').click();
+    document.querySelector('.bottom-google .container a').click();
+  },
+
+  getUserId: function () {
+    const linkList = document.querySelectorAll('a');
+    const url = Array.from(linkList).find((link) =>
+      link.href.includes('analistas_editar.php')
+    )?.href;
+
+    if (!url) {
+      return '';
+    }
+
+    const params = new URLSearchParams(url?.split('?')[1]);
+    return params.get('id_aten');
+  },
+
+  injectMessageInScreen: function (message) {
+    if (!document.querySelector('style#toast-style')) {
+      const style = document.createElement('style');
+      style.id = 'toast-style';
+      style.textContent = `
+        .toast-message {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          background-color: #333;
+          color: #fff;
+          padding: 15px;
+          text-align: center;
+          font-size: 16px;
+          z-index: 999999999999;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const toast = document.createElement('div');
+    toast.classList.add('toast-message');
+    toast.textContent = message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.remove();
+    }, 5000);
   },
 };
 

@@ -1,6 +1,7 @@
 import Messages from '../messages/index.js';
 import Actions from '../actions/index.js';
 import Scripts from '../scripts/index.js';
+import Helpers from '../helpers/index.js';
 
 const ActionsController = {
   async getStoreData({ tabId }) {
@@ -47,22 +48,24 @@ const ActionsController = {
   },
 
   async goToDashboard({ tabId, data }) {
-    const configs = Actions.getConfig();
+    const configs = Helpers.getConfigs();
 
     await chrome.tabs.update(tabId, {
-      url: configs?.dashboard?.url + data.id + '|935',
+      url: configs?.dashboard?.userId,
     });
 
-    await new Promise((resolve) => {
-      chrome.tabs.onUpdated.addListener(
-        function listener(tabIdUpdated, changeInfo) {
-          if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
-            chrome.tabs.onUpdated.removeListener(listener);
-            resolve();
-          }
-        }
-      );
+    await Helpers.awaitForTabUpdate(tabId);
+
+    const [{ result }] = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: Scripts.getUserId,
     });
+
+    await chrome.tabs.update(tabId, {
+      url: configs?.dashboard?.url + data.id + '|' + result,
+    });
+
+    await Helpers.awaitForTabUpdate(tabId);
 
     await chrome.scripting.executeScript({
       target: { tabId },
@@ -106,19 +109,6 @@ const ActionsController = {
       }
     );
     return Messages.success('STORAGE');
-  },
-
-  async awaitToUpdate(tabId) {
-    await new Promise((resolve) => {
-      chrome.tabs.onUpdated.addListener(
-        function listener(tabIdUpdated, changeInfo) {
-          if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
-            chrome.tabs.onUpdated.removeListener(listener);
-            resolve();
-          }
-        }
-      );
-    });
   },
 };
 

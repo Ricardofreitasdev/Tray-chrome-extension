@@ -1,5 +1,5 @@
 import Messages from '../messages/index.js';
-import environments from '../../config.js';
+import Helpers from '../helpers/index.js';
 
 const FB_CONVERSIONS = 'fbConversionsDebug=1';
 const REMOVE_THEME_PARAM = 'layoutOff=1';
@@ -20,7 +20,7 @@ const Actions = {
       throw new Error(Messages.error('THEME_ALREADY_REMOVED'));
     }
 
-    const newUrl = this.addParam(url, REMOVE_THEME_PARAM);
+    const newUrl = Helpers.addParam(url, REMOVE_THEME_PARAM);
 
     return { newUrl, message };
   },
@@ -32,7 +32,7 @@ const Actions = {
       throw new Error(Messages.error('FB_CONVERSIONS_ERROR'));
     }
 
-    const newUrl = this.addParam(url, FB_CONVERSIONS);
+    const newUrl = Helpers.addParam(url, FB_CONVERSIONS);
 
     return { newUrl, message };
   },
@@ -53,7 +53,7 @@ const Actions = {
     const hashIndex = url.indexOf('#');
     const urlWithoutHash = hashIndex >= 0 ? url.substring(0, hashIndex) : url;
 
-    let newUrl = this.addParam(urlWithoutHash, param);
+    let newUrl = Helpers.addParam(urlWithoutHash, param);
 
     if (hashIndex >= 0) {
       newUrl = `${newUrl}${url.substring(hashIndex)}`;
@@ -101,7 +101,7 @@ const Actions = {
   },
 
   changeUrl({ currentUrl, environment }) {
-    const config = this.getConfig();
+    const config = Helpers.getConfigs();
     const checkoutEnvironments = this.createEnvironmentMapping(
       config.easy,
       CHECKOUT_PREFIX
@@ -132,11 +132,6 @@ const Actions = {
     throw new Error(Messages.error('CHANGE_URL_ERROR'));
   },
 
-  addParam(url, param) {
-    const separator = url.includes('?') ? '&' : '?';
-    return `${url}${separator}${param}`;
-  },
-
   createEnvironmentMapping(items, replaceText) {
     const mapping = {};
     items.forEach((item) => {
@@ -146,10 +141,6 @@ const Actions = {
           : url.replace(replaceText, item.url);
     });
     return mapping;
-  },
-
-  getConfig() {
-    return environments || {};
   },
 };
 

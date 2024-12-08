@@ -16,6 +16,7 @@ export default class Messages {
     CHANGE_URL_ERROR: 'Não é possível aplicar o ambiente nessa página',
     STORAGE: 'Ocorreu um erro ao limpar o storage!',
     DASHBOARD: 'Ocorreu um erro ao abrir o painel!',
+    INVALID_STORE_ID: 'Código de loja inválido',
   };
 
   static success(key) {

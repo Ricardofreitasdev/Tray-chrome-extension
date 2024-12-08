@@ -10,9 +10,9 @@
   "action": {
     "default_popup": "dist/index.html",
     "default_icon": {
-      "16": "./src/assets/icon.png",
-      "48": "./src/assets/icon.png",
-      "128": "./src/assets/icon.png"
+      "16": "dist/assets/icon.png",
+      "48": "dist/assets/icon.png",
+      "128": "dist/assets/icon.png"
     }
   },
   "host_permissions": ["<all_urls>"],
@@ -27,8 +27,8 @@
     "clipboardRead"
   ],
   "icons": {
-    "16": "./src/assets/icon.png",
-    "48": "./src/assets/icon.png",
-    "128": "./src/assets/icon.png"
+    "16": "dist/assets/icon.png",
+    "48": "dist/assets/icon.png",
+    "128": "dist/assets/icon.png"
   }
 }
