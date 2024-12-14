@@ -46,7 +46,7 @@ onMounted(async () => {
 .board {
   background: #0d1117;
   max-width: 300px;
-  width: 400px;
+  width: 450px;
   height: 480px;
   overflow-y: hidden;
   padding: 16px;
